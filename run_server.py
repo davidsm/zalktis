@@ -5,6 +5,7 @@ import tornado.web
 import tornado.process
 import tornado.options
 import json
+import redis
 
 class JsonHandler(tornado.web.RequestHandler):
     def prepare(self):
@@ -17,8 +18,11 @@ class JsonHandler(tornado.web.RequestHandler):
                 self.finish()
                 
 
-class SystemHandler(tornado.web.RequestHandler):
-    pass
+class SystemHandler(JsonHandler):
+    def post(self):
+        if self.data["command"] == "shutdown":
+            r.publish("system", json.dumps({"command": "shutdown"}))
+            self.write({"status": "OK"})
 
 class OmxHandler(JsonHandler):
     def post(self):
@@ -33,4 +37,5 @@ if __name__ == "__main__":
     app = tornado.web.Application([tornado.web.url(r"/play", OmxHandler),
                                    tornado.web.url(r"/system", SystemHandler)])
     app.listen(8080)
+    r = redis.StrictRedis(unix_socket_path="/tmp/redis.sock")
     tornado.ioloop.IOLoop.current().start()
