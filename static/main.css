@@ -1,0 +1,32 @@
+*, *:before, *:after{
+    -webkit-box-sizing: border:box;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #A9D2BA;
+}
+
+.main {
+    width: 80%;
+    margin: 0 10%;
+}
+
+.button {
+    margin: 15px 0;
+    width: 100%;
+    background: none;
+    background-color: #A76155;
+    padding: 10px;
+    color: #ECECEC;
+    font-family: Helvetica, sans-serif;
+    font-size: 25px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.button.disabled {
+    border: 2px solid #AAAAAA;
+    color: #AAAAAA;
+}

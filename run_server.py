@@ -6,6 +6,7 @@ import tornado.process
 import tornado.options
 import json
 import redis
+import os.path
 
 class JsonHandler(tornado.web.RequestHandler):
     def prepare(self):
@@ -32,10 +33,23 @@ class OmxHandler(JsonHandler):
         tornado.process.Subprocess(omx_command)
         self.write({"status": "OK"})
 
+class IndexHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("index.html")
+
 if __name__ == "__main__":
     tornado.options.parse_command_line()
-    app = tornado.web.Application([tornado.web.url(r"/play", OmxHandler),
-                                   tornado.web.url(r"/system", SystemHandler)])
+    base_dir = os.path.dirname(__file__)
+    settings = {
+        "template_path": os.path.join(base_dir, "templates"),
+        "static_path": os.path.join(base_dir, "static"),
+        "debug": True
+        }
+    app = tornado.web.Application([
+            tornado.web.url(r"/play", OmxHandler),
+            tornado.web.url(r"/system", SystemHandler),
+            tornado.web.url(r"/", IndexHandler)
+            ], **settings)
     app.listen(8080)
     r = redis.StrictRedis(unix_socket_path="/tmp/redis.sock")
     tornado.ioloop.IOLoop.current().start()
