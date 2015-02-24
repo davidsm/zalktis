@@ -24,11 +24,12 @@ class SystemHandler(JsonHandler):
 
 class OmxHandler(JsonHandler):
     def post(self):
-        stream_uri = "%s://%s:%s" % (self.data["protocol"], self.data["uri"], self.data["port"])
-        omx_command = ["omxplayer", "-o", "hdmi", "--timeout",
-                       "30", "-r", stream_uri]
-        tornado.process.Subprocess(omx_command)
-        self.write({"status": "OK"})
+        if self.data["command"] == "play":
+            stream_uri = "%s://%s" % (self.data["args"]["protocol"], self.data["args"]["uri"])
+            omx_command = ["omxplayer", "-o", "hdmi", "--timeout",
+                           "30", "-r", stream_uri]
+            tornado.process.Subprocess(omx_command)
+            self.write({"status": "OK"})
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
