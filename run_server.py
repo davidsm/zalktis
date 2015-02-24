@@ -5,7 +5,7 @@ import tornado.web
 import tornado.process
 import tornado.options
 import json
-import redis
+import zalktis.pubsub
 import os.path
 
 class JsonHandler(tornado.web.RequestHandler):
@@ -22,7 +22,8 @@ class JsonHandler(tornado.web.RequestHandler):
 class SystemHandler(JsonHandler):
     def post(self):
         if self.data["command"] == "shutdown":
-            r.publish("system", json.dumps({"command": "shutdown"}))
+            zalktis.pubsub.get_pubsub_connection(zalktis.pubsub.PUBSUB_CONNECTION_ADDRESS) \
+                          .publish("system", json.dumps({"command": "shutdown"}))
             self.write({"status": "OK"})
 
 class OmxHandler(JsonHandler):
@@ -51,5 +52,4 @@ if __name__ == "__main__":
             tornado.web.url(r"/", IndexHandler)
             ], **settings)
     app.listen(8080)
-    r = redis.StrictRedis(unix_socket_path="/tmp/redis.sock")
     tornado.ioloop.IOLoop.current().start()
