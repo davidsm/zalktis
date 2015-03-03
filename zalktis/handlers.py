@@ -23,7 +23,13 @@ class SystemHandler(JsonHandler):
             self.write({"status": "OK"})
 
 class OmxHandler(JsonHandler):
+    def options(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers", 'Content-Type')
+
     def post(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
         if self.data["command"] == "play":
             stream_uri = "%s://%s" % (self.data["args"]["protocol"], self.data["args"]["uri"])
             omx_command = ["omxplayer", "-o", "hdmi", "--timeout",
