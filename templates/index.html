@@ -5,8 +5,15 @@
     <link rel="stylesheet" href="{{ static_url("main.css") }}">
   </head>
   <body>
-    <div class="main">
-      <button id="shutdown_button" class="button">Shutdown</button>
+    <header class="main-header">
+      <button id="shutdown_button" class="button shutdown-button">
+        <i class="icon-off"></i>
+      </button>
+    </header>
+    <div class="button-area">
+      <button class="button option-button">
+        SVT Play <img src="{{ static_url("images/svtplay.png") }}"></img>
+      </button>
     </div>
     <script src="{{ static_url("main.js") }}"></script>
   </body>
