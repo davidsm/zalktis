@@ -3,6 +3,7 @@ import tornado.web
 
 import zalktis.pubsub
 import json
+import logging
 
 class JsonHandler(tornado.web.RequestHandler):
     def prepare(self):
@@ -36,6 +37,12 @@ class OmxHandler(JsonHandler):
                            "30", "-r", stream_uri]
             tornado.process.Subprocess(omx_command)
             self.write({"status": "OK"})
+
+class TestHandler(JsonHandler):
+    def post(self):
+        logger = logging.getLogger("tornado.application")
+        logger.info("Got call to test: Command: %s, Arguments: %s" % (self.data["command"], self.data["args"]))
+        self.write({"status": "OK"})
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
