@@ -44,6 +44,9 @@ class TestHandler(JsonHandler):
         logger.info("Got call to test: Command: %s, Arguments: %s" % (self.data["command"], self.data["args"]))
         self.write({"status": "OK"})
 
+class SVTPlayHandler(JsonHandler):
+    pass
+
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("index.html")
