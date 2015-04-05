@@ -74,11 +74,21 @@ class TestHandler(CommandHandler):
 class SVTPlayHandler(CommandHandler):
     @tornado.gen.coroutine
     def cmd_get_all_shows(self):
-        l = logging.getLogger("tornado.application")
-        l.info("cmd_get_all_shows start")
         scraper = zalktis.lib.svtscraper.SVTScraper()
         shows = yield scraper.get_all_shows()
-        raise tornado.gen.Return(shows.body)
+        raise tornado.gen.Return({"status": "OK", "value": shows})
+
+    @tornado.gen.coroutine
+    def cmd_get_episodes_for_show(self):
+        scraper = zalktis.lib.svtscraper.SVTScraper()
+        episodes = yield scraper.get_episodes_for_show(self.args["show_url"])
+        raise tornado.gen.Return({"status": "OK", "value": episodes})
+
+    @tornado.gen.coroutine
+    def cmd_get_video_url_for_episode(self):
+        scraper = zalktis.lib.svtscraper.SVTScraper()
+        url = yield scraper.get_video_url_for_episode(self.args["episode_url"])
+        raise tornado.gen.Return({"status": "OK", "value": url})
 
 
 class IndexHandler(tornado.web.RequestHandler):

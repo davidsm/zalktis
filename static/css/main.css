@@ -114,3 +114,43 @@ button::-moz-focus-inner {
     max-height: 100%;
 }
 
+.action-area {
+    width: 100%;
+    background-color: #626262;
+    position: absolute;
+    left: -100%;
+    top: 60px;
+    bottom: 0px;
+/*    height: 90%; */
+    min-height: 90%;
+    -webkit-transition: left 0.3s;
+    transition: left 0.3s;
+    z-index: 10;
+}
+
+.action-select {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 25px;
+    height: 40px;
+    font-size 25px;
+}
+
+.video-thumb {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    width: 224px;
+    height: 156px;
+    font-size 25px;
+    display: block;
+    text-align: center;
+    background-color: #A6B9C8;
+    cursor: pointer;
+}
+
+.video-thumb img {
+    max-width: 100%;
+    max-height: 100%;
+}
