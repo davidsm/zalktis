@@ -20,7 +20,13 @@ var Zalktis;
     }
 
     function addEndpoint (obj, endpoint, call) {
-        Object.defineProperty(obj, call, {
+        if (!obj[endpoint]) {
+            Object.defineProperty(obj, endpoint, {
+                enumberable: true,
+                value: {}
+            });
+        }
+        Object.defineProperty(obj[endpoint], call, {
             enumerable: true,
             value: function (args) {
                 makeCall(endpoint, call, args);
@@ -31,7 +37,8 @@ var Zalktis;
     var endpoints = {
         system: ["shutdown"],
         player: ["play"],
-        test: ["test"]
+        test: ["test"],
+        svtplay: ["get_all_shows"]
     };
 
     Zalktis = function () {
