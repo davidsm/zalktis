@@ -3,6 +3,38 @@ var Zalktis;
 (function () {
     "use strict";
 
+    function CrapPromise(func) {
+        // Crappy temporary stand-in for a proper promise framework (or native)
+        this._thens = [];
+        var resolve = this.resolve.bind(this);
+        var reject = function () { 
+            // Non working dummy
+        };
+
+        // Defer so "thens" can be chained before
+        setTimeout(function () {
+            func(resolve, reject);
+        }, 1);
+    }
+
+    CrapPromise.prototype.resolve = function (val) {
+        if (this._thens.length) {
+            var f = this._thens.shift()
+            var ret = f(val);
+            if (ret && ret.then && ret.then instanceof Function) {
+                ret.then(this.resolve.bind(this));
+            }
+            else {
+                this.resolve(ret);
+            }
+        }
+    };
+
+    CrapPromise.prototype.then = function (func) {
+        this._thens.push(func);
+        return this;
+    };
+
     var server_base = window.location.protocol + "//" + window.location.host;
     function makeCall (endpoint, call, args) {
         var url = server_base + "/" + endpoint;
@@ -15,8 +47,12 @@ var Zalktis;
         xhr.open("POST", url);
         xhr.setRequestHeader("Content-Type", "application/json");
         
-        // For now, ignore any answer
         xhr.send(JSON.stringify(data));
+        return new CrapPromise(function (resolve, reject) {
+            xhr.onload = function () {
+                resolve(xhr.responseText);
+            }
+        });
     }
 
     function addEndpoint (obj, endpoint, call) {
@@ -29,7 +65,7 @@ var Zalktis;
         Object.defineProperty(obj[endpoint], call, {
             enumerable: true,
             value: function (args) {
-                makeCall(endpoint, call, args);
+                return makeCall(endpoint, call, args);
             }
         });
     }
