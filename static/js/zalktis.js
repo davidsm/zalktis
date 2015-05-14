@@ -65,7 +65,7 @@ var Zalktis;
     function addEndpoint (obj, endpoint, call) {
         if (!obj[endpoint]) {
             Object.defineProperty(obj, endpoint, {
-                enumberable: true,
+                enumerable: true,
                 value: {}
             });
         }
