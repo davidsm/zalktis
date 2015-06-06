@@ -91,6 +91,11 @@ class SVTPlayHandler(CommandHandler):
         raise tornado.gen.Return({"status": "OK", "value": url})
 
 
+class ControlHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("control.html")
+
+    
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("index.html")

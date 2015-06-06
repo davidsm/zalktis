@@ -1,93 +1,97 @@
 var zalktis = new Zalktis();
 
-var VideoSelector = React.createClass({
-    displayName: "VideoSelector",
+var Grid = React.createClass({
+    displayName: "Grid",
+
+    render: function () {
+        return React.DOM.div({
+            style: {
+                width: screen.width,
+                height: screen.height,
+                position: "relative"
+            }
+        }, this.props.children);
+    }
+});
+
+var GridArea = React.createClass({
+    displayName: "GridArea",
+
+    render: function () {
+        return React.DOM.div({
+            style: {
+                width: this.props.width,
+                height : this.props.height,
+                position: "absolute",
+                top: this.props.offsetLeft || 0,
+                left: this.props.offsetTop || 0
+            }
+        }, this.props.children);
+    }
+});
+
+var Clock = React.createClass({
+    displayName: "Clock",
 
     getInitialState: function () {
         return {
-            shows: [],
-            videos: []
+            now: new Date()
         };
     },
 
     componentDidMount: function () {
-        zalktis.svtplay.get_all_shows().then(function (shows) {
-            this.setState({
-                shows: shows
-            });
-        }.bind(this));
+        this.timer = setInterval(this.tick, 5000);
     },
 
-    _onChange: function (e) {
-        zalktis.svtplay.get_episodes_for_show({
-            show_url: this.state.shows[e.target.value].url
-        }).then(function (episodes) {
-            this.setState({
-                videos: episodes
-            });
-        }.bind(this));
+    componentWillUnmount: function () {
+        clearInterval(this.timer);
     },
-    
+
+    tick: function () {
+        this.setState({now: new Date()});
+    },
+
+    timeString: function () {
+        return this.state.now.getHours() + ":" + this.state.now.getMinutes();
+    },
+
+    dateString: function () {
+        return this.state.now.toDateString();
+    },
+
     render: function () {
-        var children = [
-            React.DOM.select({
-                onChange: this._onChange,
-                className: "action-select"
-            }, this.state.shows.map(function (show, i) {
-                return React.DOM.option({value: i}, show.title)
-            }))
-        ].concat(this.state.videos.map(function (video) {
-            return React.createElement(VideoItem, {
-                data: video
-            })
-        }));
-        return (
-            React.DOM.div(
-                null,               
-                children              
-            )  
-        );
-    }
-});
-
-
-var VideoItem = React.createClass({
-    displayName: "VideoItem",
-    _onClick: function (e) {
-        zalktis.svtplay.get_video_url_for_episode({
-            episode_url: this.props.data.url
-        }).then(function (url) {
-            zalktis.player.play({
-                "protocol": "http",
-                "uri": url.replace("http://", "")
-            });
-        }.bind(this));
-    },
-    render: function () {
-        return (
-            React.DOM.a({
-                onClick: this._onClick,
-                className: "video-thumb"
-            }, React.DOM.img({
-                src: this.props.data.thumbnail
-            }), React.DOM.span(
+        return React.DOM.div(
+            {className: "clock"},
+            React.DOM.span(
+                {className: "time"},
                 null,
-                this.props.data.title
-            ))
+                this.timeString()
+            ),
+            React.DOM.span(
+                {className: "date"},
+                null,
+                this.dateString()
+            )
         );
     }
 });
 
-function main() {
-    document.querySelector("#shutdown-button").addEventListener("click", function () {
-	zalktis.system.shutdown();
-    });
-    document.querySelector("#svtplay-button").addEventListener("click", function () {
-	var actionArea = document.querySelector("#action-area");
-        actionArea.style.left = "0";
-        React.render(React.createElement(VideoSelector, null),
-                     actionArea);
-    });
-}
 
-document.addEventListener("DOMContentLoaded", main);
+var MainPage = React.createClass({
+    render: function () {
+        return React.createElement(
+            Grid, null,
+            React.createElement(
+                GridArea, {
+                    width: "25%",
+                    height: "25%",
+                    offsetLeft: "75%",
+                    offsetTop: "75%"
+                }, React.createElement(Clock, null)
+            )
+        );
+    }
+});
+
+
+React.render(React.createElement(MainPage, null), document.querySelector("#mount-point"));

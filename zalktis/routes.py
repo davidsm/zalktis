@@ -1,10 +1,11 @@
-import tornado.web
+from tornado.web import url
 import zalktis.handlers
 
 routes = [
-    tornado.web.url(r"/player", zalktis.handlers.OmxHandler),
-    tornado.web.url(r"/system", zalktis.handlers.SystemHandler),
-    tornado.web.url(r"/svtplay", zalktis.handlers.SVTPlayHandler),
-    tornado.web.url(r"/test", zalktis.handlers.TestHandler),
-    tornado.web.url(r"/", zalktis.handlers.IndexHandler)
+    url(r"/player", zalktis.handlers.OmxHandler),
+    url(r"/system", zalktis.handlers.SystemHandler),
+    url(r"/svtplay", zalktis.handlers.SVTPlayHandler),
+    url(r"/test", zalktis.handlers.TestHandler),
+    url(r"/control", zalktis.handlers.ControlHandler),
+    url(r"/", zalktis.handlers.IndexHandler)
 ]

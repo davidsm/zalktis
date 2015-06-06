@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="{{ static_url("css/main.css") }}">
-  </head>
-  <body>
-    <header class="main-header">
-      <button id="shutdown-button" class="button shutdown-button">
-        <i class="icon-off"></i>
-      </button>
-    </header>
-    <div class="button-area">
-      <button id="svtplay-button" class="button option-button">
-        SVT Play <img src="{{ static_url("images/svtplay.png") }}"></img>
-      </button>
-    </div>
-    <div id="action-area" class="action-area"></div>
-    <script src="{{ static_url("js/vendor/react-0.13.3.js") }}"></script>
-    <script src="{{ static_url("js/zalktis.js") }}"></script>
-    <script src="{{ static_url("js/main.js") }}"></script>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<div id="mount-point"></div>
+{% end %}
+{% block extra_js %}
+<script src="{{ static_url("js/main.js") }}"></script>
+{% end %}
