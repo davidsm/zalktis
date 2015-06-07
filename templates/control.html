@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="main-header">
+  <button id="shutdown-button" class="button shutdown-button">
+    <i class="icon-off"></i>
+  </button>
+</header>
+<div class="button-area">
+  <button id="svtplay-button" class="button option-button">
+    SVT Play <img src="{{ static_url("images/svtplay.png") }}"></img>
+  </button>
+</div>
+<div id="action-area" class="action-area"></div>
+{% end %}
+{% block extra_js %}
+<script src="{{ static_url("js/control.js") }}"></script>
+{% end %}
