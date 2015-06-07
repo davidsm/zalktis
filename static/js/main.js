@@ -52,7 +52,10 @@ var Clock = React.createClass({
     },
 
     timeString: function () {
-        return this.state.now.getHours() + ":" + this.state.now.getMinutes();
+        var hour = this.state.now.getHours();
+        var minute = this.state.now.getMinutes();
+        minute = minute > 9 ? minute : "0" + minute.toString();
+        return hour + ":" + minute;
     },
 
     dateString: function () {
