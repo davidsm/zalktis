@@ -6,6 +6,6 @@ routes = [
     url(r"/system", zalktis.handlers.SystemHandler),
     url(r"/svtplay", zalktis.handlers.SVTPlayHandler),
     url(r"/test", zalktis.handlers.TestHandler),
-    url(r"/control", zalktis.handlers.ControlHandler),
-    url(r"/", zalktis.handlers.IndexHandler)
+    url(r"/control", zalktis.handlers.PageHandler),
+    url(r"/", zalktis.handlers.PageHandler, {"page": "index.html"})
 ]

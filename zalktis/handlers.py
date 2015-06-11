@@ -1,11 +1,14 @@
+import json
+import logging
+import os
+
 import tornado.process
 import tornado.web
 import tornado.gen
 
 import zalktis.pubsub
 import zalktis.lib.svtscraper
-import json
-import logging
+
 
 class CommandHandler(tornado.web.RequestHandler):
     def prepare(self):
@@ -34,7 +37,7 @@ class CommandHandler(tornado.web.RequestHandler):
         self.set_status(400)
         self.write({"status": "Failure", "error": message})
         self.finish()
-                
+
 
 class SystemHandler(CommandHandler):
     @tornado.gen.coroutine
@@ -61,7 +64,7 @@ class OmxHandler(CommandHandler):
     def post(self):
         self.set_header("Access-Control-Allow-Origin", "*")
         super(OmxHandler, self).post()
-           
+
 
 class TestHandler(CommandHandler):
     @tornado.gen.coroutine
@@ -69,7 +72,7 @@ class TestHandler(CommandHandler):
         logger = logging.getLogger("tornado.application")
         logger.info("Got call to test: Command: %s, Arguments: %s" % (self.command, self.args))
         raise tornado.gen.Return({"status": "OK"})
-        
+
 
 class SVTPlayHandler(CommandHandler):
     @tornado.gen.coroutine
@@ -91,11 +94,12 @@ class SVTPlayHandler(CommandHandler):
         raise tornado.gen.Return({"status": "OK", "value": url})
 
 
-class ControlHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render("control.html")
+class PageHandler(tornado.web.RequestHandler):
+    def initialize(self, page=None):
+        if not page:
+            self.page = "%s.html" % os.path.basename(self.request.path)
+        else:
+            self.page = page
 
-    
-class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html")
+        self.render(self.page)
