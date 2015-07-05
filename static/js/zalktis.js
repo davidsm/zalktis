@@ -4,7 +4,15 @@ var Zalktis;
     "use strict";
 
     var server_base = window.location.protocol + "//" + window.location.host;
-    function makeCall (endpoint, call, args) {
+
+    function camelToSnake(text) {
+        var rexp = new RegExp("[A-Z]", "g");
+        return text.replace(rexp, function (match) {
+            return "_" + match.toLowerCase();
+        });
+    }
+
+    function makeCall(endpoint, call, args) {
         var url = server_base + "/" + endpoint;
         args = args || {};
         var data = {
@@ -14,7 +22,7 @@ var Zalktis;
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url);
         xhr.setRequestHeader("Content-Type", "application/json");
-        
+
         xhr.send(JSON.stringify(data));
         return new CrapPromise(function (resolve, reject) {
             xhr.onload = function () {
@@ -30,7 +38,7 @@ var Zalktis;
         });
     }
 
-    function addEndpoint (obj, endpoint, call) {
+    function addEndpoint(obj, endpoint, call) {
         if (!obj[endpoint]) {
             Object.defineProperty(obj, endpoint, {
                 enumerable: true,
@@ -40,7 +48,7 @@ var Zalktis;
         Object.defineProperty(obj[endpoint], call, {
             enumerable: true,
             value: function (args) {
-                return makeCall(endpoint, call, args);
+                return makeCall(endpoint, camelToSnake(call), args);
             }
         });
     }
@@ -49,7 +57,7 @@ var Zalktis;
         system: ["shutdown"],
         player: ["play"],
         test: ["test"],
-        svtplay: ["get_all_shows", "get_episodes_for_show", "get_video_url_for_episode"]
+        svtplay: ["getAllShows", "getEpisodesForShow", "getVideoUrlForEpisode"]
     };
 
     Zalktis = function () {
