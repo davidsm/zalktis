@@ -97,4 +97,51 @@ var MainPage = React.createClass({
 });
 
 
-React.render(React.createElement(MainPage, null), document.querySelector("#mount-point"));
+var MenuApp = (function () {
+    var connection;
+
+    var MenuBar = React.createClass({
+
+        getInitialState: function () {
+            return {open: false};
+        },
+
+        componentWillMount: function () {
+            connection.on("menu-toggle", function (data) {
+                this.setState({
+                    open: data.action === "open"
+                });
+            }.bind(this));
+        },
+
+        render: function () {
+            var classString = "menu-bar ";
+            classString += this.state.open ? "open" : "";
+            return React.DOM.div({className: classString});
+        }
+
+    });
+
+    return {
+        init: function (conn, mountPoint) {
+            connection = conn;
+            React.render(React.createElement(MenuBar, null), mountPoint);
+        }
+    };
+
+})();
+
+
+React.render(React.createElement(MainPage, null),
+             document.querySelector("#app-mount-point"));
+RemoteControl.connect("screen").then(function (connection) {
+    connection.on("join", function (data) {
+        console.log(data.what + " has connected");
+    });
+
+    connection.on("navigate", function (data) {
+        console.log("Navigate to " + data.direction);
+    });
+
+    MenuApp.init(connection, document.querySelector("#menu-mount-point"));
+});

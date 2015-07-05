@@ -5,14 +5,15 @@ var RemoteControl;
 
     var wsServer = "ws://" + window.location.host + "/controller";
 
-    function sendMessage(event, args, ws) {
+    function sendMessage(event, args, type, ws) {
         ws.send(JSON.stringify({
             event: event,
-            args: args
+            args: args,
+            client_type: type
         }));
     }
 
-    function createConnection(ws) {
+    function createConnection(ws, type) {
         var listeners = {};
 
         var connection = {
@@ -22,7 +23,7 @@ var RemoteControl;
             },
 
             emit: function (event, args) {
-                sendMessage(event, args, ws);
+                sendMessage(event, args, type, ws);
             }
         };
 
@@ -46,11 +47,12 @@ var RemoteControl;
             var ws = new WebSocket(wsServer);
             return new CrapPromise(function (resolve, reject) {
                 ws.onopen = function () {
-                    sendMessage("join", {
-                        client_type: type
-                    }, ws);
+                    sendMessage("join", {}, type, ws);
+                    document.addEventListener("unload", function () {
+                        ws.close();
+                    });
+                    resolve(createConnection(ws, type));
                 };
-                resolve(createConnection(ws));
             });
         }
     };
