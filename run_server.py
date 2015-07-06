@@ -6,8 +6,10 @@ import tornado.web
 
 import zalktis.routes
 
-import os.path
+import os
 
+
+DEFAULT_PORT = 8080
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
@@ -18,5 +20,7 @@ if __name__ == "__main__":
         "debug": True
         }
     app = tornado.web.Application(zalktis.routes.routes, **settings)
-    app.listen(8080)
+    port = os.getenv("ZALKTIS_PORT") or DEFAULT_PORT
+
+    app.listen(port)
     tornado.ioloop.IOLoop.current().start()
