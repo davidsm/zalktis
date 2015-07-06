@@ -98,7 +98,7 @@ var MainPage = React.createClass({
 
 
 var MenuApp = (function () {
-    var connection;
+    var dispatcher;
 
     var MenuBar = React.createClass({
 
@@ -107,7 +107,7 @@ var MenuApp = (function () {
         },
 
         componentWillMount: function () {
-            connection.on("menu-toggle", function (data) {
+            dispatcher.on("menu-toggle", function (data) {
                 this.setState({
                     open: data.action === "open"
                 });
@@ -123,8 +123,8 @@ var MenuApp = (function () {
     });
 
     return {
-        init: function (conn, mountPoint) {
-            connection = conn;
+        init: function (dispObj, mountPoint) {
+            dispatcher = dispObj;
             React.render(React.createElement(MenuBar, null), mountPoint);
         }
     };
@@ -132,16 +132,48 @@ var MenuApp = (function () {
 })();
 
 
+var AppDispatcher = (function () {
+    var listeners = {};
+
+    return {
+        on: function (event, listener) {
+            listeners[event] = listeners[event] || [];
+            listeners[event].push(listener);
+        },
+        emit: function (event, data) {
+            var handlers = listeners[event];
+            if (handlers) {
+                for (var i = 0; i < handlers.length; i++) {
+                    handlers[i](data);
+                }
+            }
+        }
+    };
+})();
+
+
+var AppController = (function () {
+    var dispatcher;
+
+    function setUpConnection() {
+        RemoteControl.connect("screen").then(function (connection) {
+            connection.on("menu-toggle", function (data) {
+                dispatcher.emit("menu-toggle", data);
+            });
+        });
+    }
+
+    return {
+        init: function (dispObj) {
+            dispatcher = dispObj;
+            setUpConnection();
+        }
+    };
+
+})();
+
 React.render(React.createElement(MainPage, null),
              document.querySelector("#app-mount-point"));
-RemoteControl.connect("screen").then(function (connection) {
-    connection.on("join", function (data) {
-        console.log(data.what + " has connected");
-    });
 
-    connection.on("navigate", function (data) {
-        console.log("Navigate to " + data.direction);
-    });
-
-    MenuApp.init(connection, document.querySelector("#menu-mount-point"));
-});
+AppController.init(AppDispatcher);
+MenuApp.init(AppDispatcher, document.querySelector("#menu-mount-point"));
