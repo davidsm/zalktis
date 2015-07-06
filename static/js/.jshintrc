@@ -1,0 +1,10 @@
+{
+    "undef": true,
+    "unused": true,
+    "globals": {
+        "Zalktis": true,
+        "React": true,
+        "RemoteControl": true
+    },
+    "browser": true
+}
