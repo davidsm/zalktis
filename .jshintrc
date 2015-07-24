@@ -1,4 +1,5 @@
 {
     "browserify": true,
-    "undef": true
+    "undef": true,
+    "browser": true
 }
