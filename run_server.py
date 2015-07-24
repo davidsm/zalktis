@@ -16,7 +16,7 @@ if __name__ == "__main__":
     base_dir = os.path.dirname(__file__)
     settings = {
         "template_path": os.path.join(base_dir, "templates"),
-        "static_path": os.path.join(base_dir, "static"),
+        "static_path": os.path.join(base_dir, "dist"),
         "debug": True
         }
     app = tornado.web.Application(zalktis.routes.routes, **settings)

@@ -1,0 +1,12 @@
+{
+  "name": "zalktis",
+  "version": "0.0.1",
+  "devDependencies": {
+    "gulp": "~3.9.0",
+    "browserify": "~11.0.0",
+    "watchify": "~3.3.0",
+    "vinyl-source-stream": "~1.1.0",
+    "react": "~0.13.3",
+    "es6-promise": "~2.3.0"
+  }
+}

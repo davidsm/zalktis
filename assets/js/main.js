@@ -1,4 +1,6 @@
-var zalktis = new Zalktis();
+var React = require("react");
+var AppController = require("./appcontroller");
+var AppDispatcher = require("./dispatcher");
 
 var Grid = React.createClass({
     displayName: "Grid",
@@ -202,49 +204,6 @@ var MenuApp = (function () {
 })();
 
 
-var AppDispatcher = (function () {
-    var listeners = {};
-
-    return {
-        on: function (event, listener) {
-            listeners[event] = listeners[event] || [];
-            listeners[event].push(listener);
-        },
-        emit: function (event, data) {
-            var handlers = listeners[event];
-            if (handlers) {
-                for (var i = 0; i < handlers.length; i++) {
-                    handlers[i](data);
-                }
-            }
-        }
-    };
-})();
-
-
-var AppController = (function () {
-    var dispatcher;
-
-    function setUpConnection() {
-        RemoteControl.connect("screen").then(function (connection) {
-            connection.on("menu-toggle", function (data) {
-                dispatcher.emit("menu-toggle", data);
-            });
-
-            connection.on("navigate", function (data) {
-                dispatcher.emit("navigate", data);
-            });
-        });
-    }
-
-    return {
-        init: function (dispObj) {
-            dispatcher = dispObj;
-            setUpConnection();
-        }
-    };
-
-})();
 
 React.render(React.createElement(MainPage, null),
              document.querySelector("#app-mount-point"));

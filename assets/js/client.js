@@ -1,3 +1,6 @@
+var React = require("react");
+var RemoteControl = require("./control");
+
 var ClientApp = (function () {
     "use strict";
 
