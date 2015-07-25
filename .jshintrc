@@ -1,5 +1,9 @@
 {
     "browserify": true,
     "undef": true,
-    "browser": true
+    "browser": true,
+    "strict": true,
+    "globalstrict": true,
+    "unused": true,
+    "eqeqeq": true
 }

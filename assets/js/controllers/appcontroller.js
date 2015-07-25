@@ -1,4 +1,6 @@
-var RemoteControl = require("./control");
+"use strict";
+
+var RemoteControl = require("../control");
 
 var dispatcher;
 
