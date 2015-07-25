@@ -58,6 +58,7 @@ gulp.task("bundle", function () {
 gulp.task("watch", function () {
     gulp.watch(IMAGE_SRC, ["images"]);
     gulp.watch(CSS_SRC, ["css"]);
+    gulp.watch(FONT_SRC, ["fonts"]);
 
     ["main.js", "client.js"].forEach(function (f) {
         bundle(f, true);
