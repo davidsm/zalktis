@@ -64,4 +64,4 @@ gulp.task("watch", function () {
     });
 });
 
-gulp.task("dist", ["bundle", "css", "images"]);
+gulp.task("dist", ["bundle", "css", "images", "fonts"]);
