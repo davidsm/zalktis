@@ -123,6 +123,13 @@ body {
     margin: auto;
 }
 
+.select-button {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #C35900;
+}
+
 .navigation-button-row-center .arrow-button {
     margin: 0;
 }

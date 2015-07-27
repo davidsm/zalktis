@@ -68,6 +68,7 @@ var Navigation = React.createClass({
                 React.createElement(ArrowButton, {
                     direction: "left"
                 }),
+                React.createElement(SelectButton, null),
                 React.createElement(ArrowButton, {
                     direction: "right"
                 })
@@ -94,6 +95,20 @@ var ArrowButton = React.createClass({
         }, React.DOM.div({
             className: "arrow-" + this.props.direction
         }));
+    }
+});
+
+var SelectButton = React.createClass({
+    displayName: "SelectButton",
+
+    render: function () {
+        return React.DOM.div({
+            className: "select-button",
+
+            onClick: function () {
+                dispatcher.emit("select");
+            }
+        });
     }
 });
 
