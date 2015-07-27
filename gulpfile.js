@@ -1,3 +1,5 @@
+"use strict";
+
 var gulp = require("gulp");
 var browserify = require("browserify");
 var watchify = require("watchify");
@@ -12,6 +14,7 @@ var FONT_SRC = path.join(ASSET_BASE, "fonts/*.woff");
 var JS_DIR = path.join(ASSET_BASE, "js");
 var JS_MAIN_SRC = path.join(JS_DIR, "main.js");
 var JS_CLIENT_SRC = path.join(JS_DIR, "client.js");
+var JS_FILES = [JS_MAIN_SRC, JS_CLIENT_SRC];
 
 var DIST = "dist";
 
@@ -22,7 +25,7 @@ function copy(from, to) {
 
 function bundle(file, watch) {
     var props = {
-        entries: [path.join(JS_DIR, file)],
+        entries: [file],
         cache: {}, packageCache: {}, fullPaths: true
     };
     var bundler = watch ? watchify(browserify(props)) : browserify(props);
@@ -50,7 +53,7 @@ gulp.task("fonts", function () {
 });
 
 gulp.task("bundle", function () {
-    ["main.js", "client.js"].forEach(function (f) {
+    JS_FILES.forEach(function (f) {
         bundle(f, false);
     });
 });
@@ -60,7 +63,8 @@ gulp.task("watch", function () {
     gulp.watch(CSS_SRC, ["css"]);
     gulp.watch(FONT_SRC, ["fonts"]);
 
-    ["main.js", "client.js"].forEach(function (f) {
+    JS_FILES.forEach(function (f) {
+        console.log("Rebuilding " + f);
         bundle(f, true);
     });
 });
