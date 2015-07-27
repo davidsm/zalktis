@@ -11,7 +11,7 @@ module.exports = {
         var handlers = listeners[event];
         if (handlers) {
             for (var i = 0; i < handlers.length; i++) {
-                handlers[i](data);
+                handlers[i](data || {});
             }
         }
     }
