@@ -13,6 +13,10 @@ function setUpConnection() {
         dispatcher.on("menu-toggle", function (data) {
             connection.emit("menu-toggle", data);
         });
+
+        dispatcher.on("select", function (data) {
+            connection.emit("select", data);
+        });
     });
 }
 

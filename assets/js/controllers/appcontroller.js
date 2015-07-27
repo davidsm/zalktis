@@ -13,6 +13,10 @@ function setUpConnection() {
         connection.on("navigate", function (data) {
             dispatcher.emit("navigate", data);
         });
+
+        connection.on("select", function (data) {
+            dispatcher.emit("select", data);
+        });
     });
 }
 

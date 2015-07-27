@@ -32,7 +32,7 @@ var MenuBar = React.createClass({
             else {
                 return;
             }
-            var itemsAmount = React.Children.count(this.props.children);
+            var itemsAmount = this.props.items.length;
             var newIndex = ((itemsAmount + this.state.selectedIndex + change) %
                             itemsAmount);
             this.setState({
@@ -49,16 +49,19 @@ var MenuBar = React.createClass({
         dispatcher.on("navigate", function (data) {
             this._navigate(data.direction);
         }.bind(this));
+
+        dispatcher.on("select", function () {
+            this.props.items[this.state.selectedIndex].onSelect();
+            window.setTimeout(this._toggle.bind(this, "close"), 500);
+        }.bind(this));
     },
 
     render: function () {
         var classString = "menu-bar ";
         classString += this.state.open ? "open" : "";
-        var items = React.Children.map(this.props.children, function (child, index) {
-            if (index === this.state.selectedIndex) {
-                return React.cloneElement(child, {hasFocus: true});
-            }
-            return child;
+        var items = this.props.items.map(function (itemProps, index) {
+            itemProps.props.hasFocus = (index === this.state.selectedIndex);
+            return React.createElement(MenuItem, itemProps.props);
         }, this);
         return React.DOM.div(
             {className: classString},
@@ -87,18 +90,24 @@ module.exports = {
     init: function (dispObj, mountPoint) {
         dispatcher = dispObj;
         var menuItems = [
-            React.createElement(MenuItem, {
-                imgSrc: "/static/images/svtplay.png",
-                label: "SVTPlay",
-                hasFocus: false
-            }),
-            React.createElement(MenuItem, {
-                imgSrc: "/static/images/svtplay.png",
-                label: "Dummy",
-                hasFocus: false
-            })
+            {
+                props: {
+                    imgSrc: "/static/images/svtplay.png",
+                    label: "SVTPlay"
+                },
+                onSelect: function () {
+                    dispatcher.emit("app-select-svtplay");
+                }
+            },
+            {
+                props: {
+                    imgSrc: "/static/images/svtplay.png",
+                    label: "Dummy"
+                },
+                onSelect: function () {}
+            }
         ];
-        React.render(React.createElement(MenuBar, null, menuItems),
+        React.render(React.createElement(MenuBar, {items: menuItems}),
                      mountPoint);
     }
 };
