@@ -41,6 +41,13 @@ var MenuBar = React.createClass({
         }
     },
 
+    _select: function () {
+        if (this.state.open) {
+            this.props.items[this.state.selectedIndex].onSelect();
+            window.setTimeout(this._toggle.bind(this, "close"), 500);
+        }
+    },
+
     componentWillMount: function () {
         dispatcher.on("menu-toggle", function (data) {
             this._toggle(data.action);
@@ -50,10 +57,7 @@ var MenuBar = React.createClass({
             this._navigate(data.direction);
         }.bind(this));
 
-        dispatcher.on("select", function () {
-            this.props.items[this.state.selectedIndex].onSelect();
-            window.setTimeout(this._toggle.bind(this, "close"), 500);
-        }.bind(this));
+        dispatcher.on("select", this._select.bind(this));
     },
 
     render: function () {
@@ -96,7 +100,9 @@ module.exports = {
                     label: "SVTPlay"
                 },
                 onSelect: function () {
-                    dispatcher.emit("app-select-svtplay");
+                    dispatcher.emit("app-select", {
+                        app: "svtplay"
+                    });
                 }
             },
             {
@@ -109,5 +115,9 @@ module.exports = {
         ];
         React.render(React.createElement(MenuBar, {items: menuItems}),
                      mountPoint);
+    },
+
+    onUnload: function () {
+        /* TBD */
     }
 };

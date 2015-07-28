@@ -75,5 +75,9 @@ var MainPage = React.createClass({
 module.exports = {
     init: function (dispObj, mountPoint) {
         React.render(React.createElement(MainPage, null), mountPoint);
+    },
+
+    onUnload: function () {
+        /* TBD */
     }
 };

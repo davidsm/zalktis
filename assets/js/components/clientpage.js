@@ -116,5 +116,9 @@ module.exports = {
     init: function (dispObj, mountPoint) {
         dispatcher = dispObj;
         React.render(React.createElement(RemoteControlApp, null), mountPoint);
+    },
+
+    onUnload: function () {
+        /* TBD */
     }
 };

@@ -14,5 +14,14 @@ module.exports = {
                 handlers[i](data || {});
             }
         }
+    },
+    unregister: function (event, listener) {
+        var handlers = listeners[event];
+        for (var i = 0; i < handlers.length; i++) {
+            if (handlers[i] === listener) {
+                handlers.splice(i, 1);
+                break;
+            }
+        }
     }
 };
