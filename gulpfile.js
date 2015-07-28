@@ -21,13 +21,13 @@ function copy(from, to) {
 }
 
 function bundle(file, watch) {
-    console.log("Building " + file);
     var props = {
         entries: [path.join(JS_DIR, file)],
         cache: {}, packageCache: {}, fullPaths: true
     };
     var bundler = watch ? watchify(browserify(props)) : browserify(props);
     function rebundle() {
+        console.log("Building " + file);
         return bundler.bundle()
             .pipe(source(file))
             .pipe(gulp.dest(path.join(DIST, "js")));
