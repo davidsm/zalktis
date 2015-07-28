@@ -1,3 +1,5 @@
+"use strict";
+
 var gulp = require("gulp");
 var browserify = require("browserify");
 var watchify = require("watchify");
@@ -10,8 +12,6 @@ var IMAGE_SRC = path.join(ASSET_BASE, "images/*.@(png|jpg)");
 var CSS_SRC = path.join(ASSET_BASE, "css/*.css");
 var FONT_SRC = path.join(ASSET_BASE, "fonts/*.woff");
 var JS_DIR = path.join(ASSET_BASE, "js");
-var JS_MAIN_SRC = path.join(JS_DIR, "main.js");
-var JS_CLIENT_SRC = path.join(JS_DIR, "client.js");
 
 var DIST = "dist";
 
@@ -21,6 +21,7 @@ function copy(from, to) {
 }
 
 function bundle(file, watch) {
+    console.log("Building " + file);
     var props = {
         entries: [path.join(JS_DIR, file)],
         cache: {}, packageCache: {}, fullPaths: true
