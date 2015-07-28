@@ -27,7 +27,8 @@ function loadApp(app) {
     if (loadedApp) {
         appHandler.apps[loadedApp].unload();
     }
-    appHandler.apps[app].init(dispatcher, appHandler.MOUNT_POINT_MAIN);
+    appHandler.apps[app].init(dispatcher,
+                              document.querySelector(appHandler.MOUNT_POINT_MAIN));
     loadedApp = app;
 }
 
