@@ -53,6 +53,30 @@ body {
     font-size: 25px;
 }
 
+.shows-list {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    padding: 20px;
+    color: #EEE;
+    font-size: 20px;
+}
+
+.shows-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.shows-list ul li {
+    margin-bottom: 10px;
+}
+
+.shows-list h1 {
+    font-size: 50px;
+    color: #EEE;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
 .menu-bar {
     position: absolute;
     top: -150px;

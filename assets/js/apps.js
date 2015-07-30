@@ -1,5 +1,8 @@
 "use strict";
 
+var SVTPlayController = require("./controllers/svtplaycontroller");
+var MediaPlayerController = require("./controllers/mediaplayercontroller");
+
 var unmount = require("react").unmountComponentAtNode;
 
 function appLoader(app, handlers) {
@@ -7,11 +10,14 @@ function appLoader(app, handlers) {
 
     return {
         init: function (dispatcher, mountPoint) {
-            app.init(dispatcher, mountPoint);
-            mountedAt = mountPoint;
+            // Controllers should be loaded first
+            // so that the app can require data immediately
+            // when mounting if necessary
             if (handlers.onLoad) {
                 handlers.onLoad(dispatcher);
             }
+            app.init(dispatcher, mountPoint);
+            mountedAt = mountPoint;
         },
 
         unload: function () {
@@ -26,7 +32,18 @@ function appLoader(app, handlers) {
 
 exports.apps = {
     main: appLoader(require("./components/mainpage"), {}),
-    svtplay: appLoader(require("./components/svtplaypage"), {}),
+    svtplay: appLoader(require("./components/svtplaypage"), {
+        onLoad: function (dispatcher) {
+            SVTPlayController.init(dispatcher);
+            MediaPlayerController.init(dispatcher);
+        },
+
+        onUnload: function () {
+            SVTPlayController.onUnload();
+            MediaPlayerController.onUnload();
+        }
+
+    }),
     menu: appLoader(require("./components/menu"), {}),
     client: appLoader(require("./components/clientpage"), {})
 };
