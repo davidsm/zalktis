@@ -67,12 +67,18 @@ body {
 }
 
 .shows-list ul li {
-    margin-bottom: 10px;
+    margin-bottom: 2px;
+    padding: 5px;
+    border: 2px solid transparent;
+}
+
+.shows-list ul li.focus {
+    border: 2px solid #D77C30;
 }
 
 .shows-list h1 {
     font-size: 50px;
-    color: #EEE;
+    color: #D77C30;
     margin: 0;
     margin-bottom: 10px;
 }

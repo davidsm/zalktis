@@ -8,11 +8,15 @@ var GridArea = layout.GridArea;
 
 var dispatcher;
 
+var MAX_VISIBLE_SHOWS = 20;
+
 var ShowsList = React.createClass({
 
     getInitialState: function () {
         return {
-            shows: []
+            shows: [],
+            selectedIndex: 0,
+            hasFocus: true
         };
     },
 
@@ -22,15 +26,46 @@ var ShowsList = React.createClass({
         });
     },
 
+    _navigate: function (data) {
+        if (this.state.hasFocus) {
+            var change;
+            if (data.direction === "up") {
+                change = -1;
+            }
+            else if (data.direction === "down") {
+                change = 1;
+            }
+            else {
+                return;
+            }
+            var itemsAmount = this.state.shows.length;
+            var newIndex = ((itemsAmount + this.state.selectedIndex + change) %
+                            itemsAmount);
+            this.setState({
+                selectedIndex: newIndex
+            });
+        }
+    },
+
     componentWillMount: function () {
         dispatcher.on("svtplay-shows-updated", this._onShows.bind(this));
         dispatcher.emit("svtplay-get-shows", {});
+
+        dispatcher.on("navigate", this._navigate.bind(this));
     },
 
     render: function () {
-        var shows = this.state.shows.map(function (show) {
-            return React.createElement(ShowItem, {title: show.title});
-        });
+        var firstVisible = (parseInt(this.state.selectedIndex / MAX_VISIBLE_SHOWS, 10) *
+                            MAX_VISIBLE_SHOWS);
+        var lastVisible = Math.min((firstVisible + MAX_VISIBLE_SHOWS),
+                                   this.state.shows.length);
+        var shows = this.state.shows.slice(firstVisible, lastVisible)
+            .map(function (show, i) {
+                return React.createElement(ShowItem, {
+                    title: show.title,
+                    hasFocus: (this.state.selectedIndex === (firstVisible + i))
+                });
+            }, this);
 
         return React.DOM.div(
             {className: "shows-list"},
@@ -42,7 +77,8 @@ var ShowsList = React.createClass({
 
 var ShowItem = React.createClass({
     render: function () {
-        return React.DOM.li(null, null, this.props.title);
+        var classString = this.props.hasFocus ? "focus" : "";
+        return React.DOM.li({className: classString}, null, this.props.title);
     }
 });
 
