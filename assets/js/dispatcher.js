@@ -10,9 +10,9 @@ module.exports = {
     emit: function (event, data) {
         var handlers = listeners[event];
         if (handlers) {
-            for (var i = 0; i < handlers.length; i++) {
-                handlers[i](data || {});
-            }
+            handlers.forEach(function (handler) {
+                handler(data || {});
+            });
         }
     },
     unregister: function (event, listener) {
