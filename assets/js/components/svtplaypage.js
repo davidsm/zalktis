@@ -49,10 +49,10 @@ var ShowsList = React.createClass({
     },
 
     componentWillMount: function () {
-        dispatcher.on("svtplay-shows-updated", this._onShows.bind(this));
+        dispatcher.on("svtplay-shows-updated", this._onShows);
         dispatcher.emit("svtplay-get-shows", {});
 
-        dispatcher.on("navigate", this._navigate.bind(this));
+        dispatcher.on("navigate", this._navigate);
     },
 
     render: function () {

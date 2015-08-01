@@ -57,7 +57,7 @@ var MenuBar = React.createClass({
             this._navigate(data.direction);
         }.bind(this));
 
-        dispatcher.on("select", this._select.bind(this));
+        dispatcher.on("select", this._select);
     },
 
     render: function () {
