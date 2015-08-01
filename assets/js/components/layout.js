@@ -25,8 +25,8 @@ exports.GridArea = React.createClass({
                 width: this.props.width,
                 height : this.props.height,
                 position: "absolute",
-                top: this.props.offsetLeft || 0,
-                left: this.props.offsetTop || 0
+                top: this.props.offsetTop || 0,
+                left: this.props.offsetLeft || 0
             }
         }, this.props.children);
     }
