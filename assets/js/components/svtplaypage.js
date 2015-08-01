@@ -51,11 +51,20 @@ var ShowsList = React.createClass({
         }
     },
 
+    _select: function () {
+        if (this.state.hasFocus) {
+            dispatcher.emit("svtplay-get-episodes", {
+                url: this.state.shows[this.state.selectedIndex].url
+            });
+        }
+    },
+
     componentWillMount: function () {
         dispatcher.on("svtplay-shows-updated", this._onShows);
         dispatcher.emit("svtplay-get-shows", {});
 
         dispatcher.on("navigate", this._navigate);
+        dispatcher.on("select", this._select);
         this.handleFocus(dispatcher);
         this.takeFocus();
     },
@@ -90,6 +99,55 @@ var ShowItem = React.createClass({
     }
 });
 
+var EpisodesList = React.createClass({
+    displayName: "EpisodesList",
+
+    mixins: [Focusable],
+
+    getInitialState: function () {
+        return {
+            episodes: [],
+            selectedIndex: 0,
+            hasFocus: false
+        };
+    },
+
+    _onEpisodes: function (data) {
+        this.setState({
+            episodes: data.episodes
+        });
+    },
+
+    componentWillMount: function () {
+        dispatcher.on("svtplay-episodes-updated", this._onEpisodes);
+        this.handleFocus(dispatcher);
+    },
+
+    render: function () {
+        var episodes = this.state.episodes.map(function (episode, i) {
+            return React.createElement(EpisodeItem, {
+                title: episode.title,
+                thumbnail: episode.thumbnail
+            });
+        }, this);
+        return React.DOM.div({className: "episodes-list"},
+                             episodes);
+    }
+
+});
+
+var EpisodeItem = React.createClass({
+    displayName: "EpisodeItem",
+
+    render: function () {
+        return React.DOM.div(
+            {className: "episode-item"},
+            React.DOM.img({src: this.props.thumbnail}, null),
+            React.DOM.span({className: "episode-label"}, null, this.props.title)
+        );
+    }
+});
+
 var SVTPlayApp = React.createClass({
     render: function () {
         return React.createElement(
@@ -100,6 +158,14 @@ var SVTPlayApp = React.createClass({
                     height: "100%",
                 },
                 React.createElement(ShowsList, null)
+            ),
+            React.createElement(
+                GridArea, {
+                    width: "80%",
+                    height: "100%",
+                    offsetLeft: "20%"
+                },
+                React.createElement(EpisodesList, null)
             )
         );
     }

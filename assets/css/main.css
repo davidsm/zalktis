@@ -83,6 +83,18 @@ body {
     margin-bottom: 10px;
 }
 
+.episodes-list {
+    white-space: nowrap;
+}
+
+.episode-item {
+    display: inline-block;
+}
+
+.episode-label {
+    display: block;
+}
+
 .menu-bar {
     position: absolute;
     top: -150px;
