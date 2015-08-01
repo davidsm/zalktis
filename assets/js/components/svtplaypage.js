@@ -11,6 +11,7 @@ var dispatcher;
 var MAX_VISIBLE_SHOWS = 20;
 
 var ShowsList = React.createClass({
+    displayName: "ShowsList",
 
     getInitialState: function () {
         return {
@@ -76,6 +77,8 @@ var ShowsList = React.createClass({
 });
 
 var ShowItem = React.createClass({
+    displayName: "ShowItem",
+
     render: function () {
         var classString = this.props.hasFocus ? "focus" : "";
         return React.DOM.li({className: classString}, null, this.props.title);
