@@ -1,6 +1,7 @@
 "use strict";
 
 var React = require("react");
+var Focusable = require("./mixins").focusable;
 var layout = require("./layout");
 var Grid = layout.Grid;
 var GridArea = layout.GridArea;
@@ -13,11 +14,13 @@ var MAX_VISIBLE_SHOWS = 20;
 var ShowsList = React.createClass({
     displayName: "ShowsList",
 
+    mixins: [Focusable],
+
     getInitialState: function () {
         return {
             shows: [],
             selectedIndex: 0,
-            hasFocus: true
+            hasFocus: false
         };
     },
 
@@ -53,6 +56,8 @@ var ShowsList = React.createClass({
         dispatcher.emit("svtplay-get-shows", {});
 
         dispatcher.on("navigate", this._navigate);
+        this.handleFocus(dispatcher);
+        this.takeFocus();
     },
 
     render: function () {
