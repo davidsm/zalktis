@@ -40,6 +40,11 @@ body {
     margin: 0;
 }
 
+.grid-area {
+    position: absolute;
+    overflow: hidden;
+}
+
 .clock {
     color: #EEE;
 }
@@ -85,15 +90,31 @@ body {
 }
 
 .episodes-list {
+    margin-top: 150px;
     white-space: nowrap;
 }
 
 .episode-item {
-    display: inline-block;
+    /*display: inline-block;*/
+    position: absolute;
+    border: 4px solid transparent;
+}
+
+.episode-item.focus {
+    border: 4px solid #D77C30;
+}
+
+.episode-item img {
+    display: block;
+    width: 100%;
 }
 
 .episode-label {
-    display: block;
+    font-size: 25px;
+    color: #EEE;
+    background-color: #202020;
+    padding: 5px 0;
+    text-align: center;
 }
 
 .menu-bar {

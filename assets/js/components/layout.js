@@ -24,10 +24,10 @@ exports.GridArea = React.createClass({
             style: {
                 width: this.props.width,
                 height : this.props.height,
-                position: "absolute",
                 top: this.props.offsetTop || 0,
                 left: this.props.offsetLeft || 0
-            }
+            },
+            className: "grid-area"
         }, this.props.children);
     }
 });

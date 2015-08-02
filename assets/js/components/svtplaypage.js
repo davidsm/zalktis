@@ -99,6 +99,8 @@ var ShowItem = React.createClass({
     }
 });
 
+var MAX_VISIBLE_EPISODES = 3;
+
 var EpisodesList = React.createClass({
     displayName: "EpisodesList",
 
@@ -116,20 +118,79 @@ var EpisodesList = React.createClass({
         this.setState({
             episodes: data.episodes
         });
+        this.takeFocus();
+    },
+
+    _navigate: function (data) {
+        if (this.state.hasFocus) {
+            var change;
+            if (data.direction === "left") {
+                change = -1;
+            }
+            else if (data.direction === "right") {
+                change = 1;
+            }
+            else {
+                return;
+            }
+            var itemsAmount = this.state.episodes.length;
+            var newIndex = ((itemsAmount + this.state.selectedIndex + change) %
+                            itemsAmount);
+            this.setState({
+                selectedIndex: newIndex
+            });
+        }
+    },
+
+    _select: function () {},
+
+    getVisibleEpisodes: function () {
+        // Get one episode before and one after the selected one
+        // Wrap around when necessary
+        if (!this.state.episodes.length) {
+            return [];
+        }
+        var i = 0;
+        var visibleEpisodes = [];
+        while (i < MAX_VISIBLE_EPISODES) {
+            // Javascript modulo is dumb :(
+            var episodeIndex = ((this.state.episodes.length +
+                                 this.state.selectedIndex - 1 + i) %
+                                this.state.episodes.length);
+            if (visibleEpisodes.length < this.state.episodes.length) {
+                visibleEpisodes.push(this.state.episodes[episodeIndex]);
+            }
+            i++;
+        }
+        return visibleEpisodes;
     },
 
     componentWillMount: function () {
         dispatcher.on("svtplay-episodes-updated", this._onEpisodes);
+        dispatcher.on("navigate", this._navigate);
+        dispatcher.on("select", this._select);
         this.handleFocus(dispatcher);
     },
 
     render: function () {
-        var episodes = this.state.episodes.map(function (episode, i) {
+        var visibleEpisodes = this.getVisibleEpisodes();
+
+        // Percent
+        var episodeItemSize = 50;
+        var gutter = 5;
+        var positionStart = visibleEpisodes.length < MAX_VISIBLE_EPISODES ? 25 : -30;
+        var focusedIndex = visibleEpisodes.length < MAX_VISIBLE_EPISODES ? 0 : 1;
+
+        var episodes = visibleEpisodes.map(function (episode, i) {
             return React.createElement(EpisodeItem, {
                 title: episode.title,
-                thumbnail: episode.thumbnail
+                thumbnail: episode.thumbnail,
+                hasFocus: (i === focusedIndex),
+                width: episodeItemSize,
+                left: positionStart + ((episodeItemSize + gutter) * i)
             });
         }, this);
+
         return React.DOM.div({className: "episodes-list"},
                              episodes);
     }
@@ -140,10 +201,22 @@ var EpisodeItem = React.createClass({
     displayName: "EpisodeItem",
 
     render: function () {
+        var classString = "episode-item";
+        if (this.props.hasFocus) {
+            classString += " focus";
+        }
         return React.DOM.div(
-            {className: "episode-item"},
-            React.DOM.img({src: this.props.thumbnail}, null),
-            React.DOM.span({className: "episode-label"}, null, this.props.title)
+            {
+                className: classString,
+                style: {
+                    left: this.props.left + "%",
+                    width: this.props.width + "%"
+                }
+            },
+            React.DOM.img({
+                src: this.props.thumbnail,
+            }, null),
+            React.DOM.div({className: "episode-label"}, null, this.props.title)
         );
     }
 });
