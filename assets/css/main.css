@@ -37,6 +37,7 @@ html {
 body {
     background-color: #3E3E3E;
     overflow: hidden;
+    margin: 0;
 }
 
 .clock {
