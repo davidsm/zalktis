@@ -90,12 +90,25 @@ var ShowsList = React.createClass({
     }
 });
 
+// Not very scientific...
+var MAX_SHOW_TITLE_LENGTH = 32;
+
 var ShowItem = React.createClass({
     displayName: "ShowItem",
 
+    truncateTitle: function (title) {
+        if (title <= MAX_SHOW_TITLE_LENGTH) {
+            return title;
+        }
+        else {
+            return title.slice(0, MAX_SHOW_TITLE_LENGTH - 3) + "...";
+        }
+    },
+
     render: function () {
         var classString = this.props.hasFocus ? "focus" : "";
-        return React.DOM.li({className: classString}, null, this.props.title);
+        var title = this.truncateTitle(this.props.title);
+        return React.DOM.li({className: classString}, null, title);
     }
 });
 
@@ -233,16 +246,16 @@ var SVTPlayApp = React.createClass({
             Grid, null,
             React.createElement(
                 GridArea, {
-                    width: "20%",
+                    width: "25%",
                     height: "100%",
                 },
                 React.createElement(ShowsList, null)
             ),
             React.createElement(
                 GridArea, {
-                    width: "80%",
+                    width: "75%",
                     height: "100%",
-                    offsetLeft: "20%"
+                    offsetLeft: "25%"
                 },
                 React.createElement(EpisodesList, null)
             )
