@@ -55,9 +55,8 @@ class OmxHandler(CommandHandler):
 
     @tornado.gen.coroutine
     def cmd_play(self):
-        stream_uri = "%s://%s" % (self.args["protocol"], self.args["uri"])
         omx_command = ["omxplayer", "-o", "hdmi", "--timeout",
-                       "30", "-r", stream_uri]
+                       "30", "-r", self.args["uri"]]
         tornado.process.Subprocess(omx_command)
         raise tornado.gen.Return({"status": "OK"})
 

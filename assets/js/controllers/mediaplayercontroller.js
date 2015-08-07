@@ -7,7 +7,6 @@ var dispatcher;
 
 function startPlayback(data) {
     zalktis.player.play({
-        protocol: "http",
         uri: data.url
     }).then(function () {
         dispatcher.emit("mediaplayer-playback-started", {});
