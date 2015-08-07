@@ -23,11 +23,11 @@ function getEpisodes(data) {
     });
 }
 
-function getVideoUrl(data) {
+function playVideo(data) {
     zalktis.svtplay.getVideoUrlForEpisode({
         episode_url: data.url
     }).then(function (url) {
-        dispatcher.emit("svtplay-video-url-updated", {
+        dispatcher.emit("mediaplayer-play", {
             url: url
         });
     });
@@ -36,7 +36,7 @@ function getVideoUrl(data) {
 function setUpListeners() {
     dispatcher.on("svtplay-get-shows", getShows);
     dispatcher.on("svtplay-get-episodes", getEpisodes);
-    dispatcher.on("svtplay-get-video-url", getVideoUrl);
+    dispatcher.on("svtplay-play-episode", playVideo);
 }
 
 module.exports = {
