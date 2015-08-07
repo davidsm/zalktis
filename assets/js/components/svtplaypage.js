@@ -145,7 +145,7 @@ var EpisodesList = React.createClass({
     _select: function () {
         if (this.state.hasFocus) {
             dispatcher.emit("svtplay-play-episode", {
-                url: this.state.episodes[this.state.selectedIndex]
+                url: this.state.episodes[this.state.selectedIndex].url
             });
         }
     },
