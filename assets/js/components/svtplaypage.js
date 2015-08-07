@@ -97,7 +97,7 @@ var ShowItem = React.createClass({
     displayName: "ShowItem",
 
     truncateTitle: function (title) {
-        if (title <= MAX_SHOW_TITLE_LENGTH) {
+        if (title.length <= MAX_SHOW_TITLE_LENGTH) {
             return title;
         }
         else {
