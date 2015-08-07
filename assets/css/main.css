@@ -78,6 +78,7 @@ body {
     border: 2px solid transparent;
     white-space: nowrap;
     overflow: hidden;
+    line-height: 22px;
 }
 
 .shows-list ul li.focus {
