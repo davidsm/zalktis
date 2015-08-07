@@ -26,7 +26,7 @@ function makeCall(endpoint, call, args) {
     return new Promise(function (resolve, reject) {
         xhr.onload = function () {
             var response = JSON.parse(xhr.responseText);
-            if (response.status == "OK") {
+            if (response.status === "OK") {
                 resolve(response.value);
             }
             else {
