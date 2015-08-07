@@ -5,9 +5,16 @@ var dispatcher;
 exports.focusable = {
     retainFocus: false,
 
+    getInitialState: function () {
+        return {
+            // Eeew... Think of a better way
+            identifier: Date.now()
+        };
+    },
+
     onFocusChange: function (data) {
         this.setState({
-            hasFocus: data.focusedComponent === this.displayName
+            hasFocus: data.focusedComponent === this.state.identifier
         });
     },
 
@@ -30,7 +37,7 @@ exports.focusable = {
 
     takeFocus: function () {
         dispatcher.emit("focus-change", {
-            focusedComponent: this.displayName
+            focusedComponent: this.state.identifier
         });
     },
 
