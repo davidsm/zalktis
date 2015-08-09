@@ -11,7 +11,7 @@ var listeners = {};
 // despite having been removed before its turn.
 // This is stupid. Javascript is a stupid language.
 var ongoing = [];
-var deferred = [];
+var deferred = {};
 
 module.exports = {
 
