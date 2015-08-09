@@ -39,6 +39,7 @@ module.exports = {
                     this.on(e.event, e.listener);
                 }, this);
             }
+            deferred[event] = [];
         }
     },
 
