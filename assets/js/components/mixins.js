@@ -57,8 +57,6 @@ exports.EventEmitter = {
         }).isRequired
     },
 
-    _registeredEvents: [],
-
     on: function (event, handler) {
         this.props.dispatcher.on(event, handler);
         this._registeredEvents.push({
@@ -69,6 +67,10 @@ exports.EventEmitter = {
 
     emit: function (event, data) {
         this.props.dispatcher.emit(event, data);
+    },
+
+    componentWillMount: function () {
+        this._registeredEvents = [];
     },
 
     componentWillUnmount: function () {
