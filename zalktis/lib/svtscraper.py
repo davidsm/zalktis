@@ -20,12 +20,19 @@ class SVTScraper(object):
             show["url"] = "%s%s" % (_URL_BASE, show["url"])
         return show
 
+    def _extract_episode_url(self, el):
+        return el.find("a", href=re.compile("/video/"))["href"]
+
     def _extract_thumbnail(self, el):
         return el.find("img")["src"].replace("/small/", "/extralarge/")
 
     def _extract_title(self, el):
-        return el.find("span",
-                       class_="play_videolist-element__title-text").get_text().strip()
+        return (
+            el.find("span",
+                    class_="play_videolist-element__title-text")
+            .get_text()
+            .strip()
+        )
 
     @tornado.gen.coroutine
     def get_all_shows(self):
@@ -39,14 +46,20 @@ class SVTScraper(object):
     @tornado.gen.coroutine
     def get_episodes_for_show(self, show_url):
         response = yield AsyncHTTPClient().fetch(show_url)
-        episode_links = BeautifulSoup(response.body).find(id="more-episodes-panel").find_all("a", href=re.compile("/video/"))
+        episode_list = (
+            BeautifulSoup(response.body)
+            .find(id="more-episodes-panel")
+            .find_all("article")
+        )
 
         episodes = []
-        for a in episode_links:
+        for listing in episode_list:
             episodes.append({
-                "title": self._extract_title(a),
-                "url": a["href"],
-                "thumbnail": self._extract_thumbnail(a)
+                "title": self._extract_title(listing),
+                "url": self._extract_episode_url(listing),
+                "thumbnail": self._extract_thumbnail(listing),
+                "description": listing["data-description"],
+                "duration": listing["data-length"]
             })
         raise tornado.gen.Return(episodes)
 
