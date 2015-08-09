@@ -1,11 +1,12 @@
 "use strict";
 
 var React = require("react");
-
-var dispatcher;
+var EventEmitter = require("./mixins").EventEmitter;
 
 var MenuBar = React.createClass({
     displayName: "MenuBar",
+
+    mixins: [EventEmitter],
 
     getInitialState: function () {
         return {
@@ -49,15 +50,15 @@ var MenuBar = React.createClass({
     },
 
     componentWillMount: function () {
-        dispatcher.on("menu-toggle", function (data) {
+        this.on("menu-toggle", function (data) {
             this._toggle(data.action);
         }.bind(this));
 
-        dispatcher.on("navigate", function (data) {
+        this.on("navigate", function (data) {
             this._navigate(data.direction);
         }.bind(this));
 
-        dispatcher.on("select", this._select);
+        this.on("select", this._select);
     },
 
     render: function () {
@@ -91,8 +92,7 @@ var MenuItem = React.createClass({
 });
 
 module.exports = {
-    init: function (dispObj, mountPoint) {
-        dispatcher = dispObj;
+    init: function (dispatcher, mountPoint) {
         var menuItems = [
             {
                 props: {
@@ -113,8 +113,10 @@ module.exports = {
                 onSelect: function () {}
             }
         ];
-        React.render(React.createElement(MenuBar, {items: menuItems}),
-                     mountPoint);
+        React.render(React.createElement(MenuBar, {
+            items: menuItems,
+            dispatcher: dispatcher
+        }), mountPoint);
     },
 
     onUnload: function () {

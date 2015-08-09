@@ -73,7 +73,7 @@ var MainPage = React.createClass({
 });
 
 module.exports = {
-    init: function (dispObj, mountPoint) {
+    init: function (dispatcher, mountPoint) {
         React.render(React.createElement(MainPage, null), mountPoint);
     },
 

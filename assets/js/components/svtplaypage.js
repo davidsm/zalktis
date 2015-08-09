@@ -1,20 +1,19 @@
 "use strict";
 
 var React = require("react");
-var Focusable = require("./mixins").focusable;
+var Focusable = require("./mixins").Focusable;
+var EventEmitter = require("./mixins").EventEmitter;
 var layout = require("./layout");
 var Grid = layout.Grid;
 var GridArea = layout.GridArea;
 
-
-var dispatcher;
 
 var MAX_VISIBLE_SHOWS = 20;
 
 var ShowsList = React.createClass({
     displayName: "ShowsList",
 
-    mixins: [Focusable],
+    mixins: [EventEmitter, Focusable],
 
     getInitialState: function () {
         return {
@@ -53,19 +52,18 @@ var ShowsList = React.createClass({
 
     _select: function () {
         if (this.state.hasFocus) {
-            dispatcher.emit("svtplay-get-episodes", {
+            this.emit("svtplay-get-episodes", {
                 url: this.state.shows[this.state.selectedIndex].url
             });
         }
     },
 
     componentWillMount: function () {
-        dispatcher.on("svtplay-shows-updated", this._onShows);
-        dispatcher.emit("svtplay-get-shows", {});
+        this.on("svtplay-shows-updated", this._onShows);
+        this.emit("svtplay-get-shows", {});
 
-        dispatcher.on("navigate", this._navigate);
-        dispatcher.on("select", this._select);
-        this.handleFocus(dispatcher);
+        this.on("navigate", this._navigate);
+        this.on("select", this._select);
         this.takeFocus();
     },
 
@@ -117,7 +115,7 @@ var MAX_VISIBLE_EPISODES = 3;
 var EpisodesList = React.createClass({
     displayName: "EpisodesList",
 
-    mixins: [Focusable],
+    mixins: [EventEmitter, Focusable],
 
     getInitialState: function () {
         return {
@@ -157,7 +155,7 @@ var EpisodesList = React.createClass({
 
     _select: function () {
         if (this.state.hasFocus) {
-            dispatcher.emit("svtplay-play-episode", {
+            this.emit("svtplay-play-episode", {
                 url: this.state.episodes[this.state.selectedIndex].url
             });
         }
@@ -185,10 +183,9 @@ var EpisodesList = React.createClass({
     },
 
     componentWillMount: function () {
-        dispatcher.on("svtplay-episodes-updated", this._onEpisodes);
-        dispatcher.on("navigate", this._navigate);
-        dispatcher.on("select", this._select);
-        this.handleFocus(dispatcher);
+        this.on("svtplay-episodes-updated", this._onEpisodes);
+        this.on("navigate", this._navigate);
+        this.on("select", this._select);
     },
 
     render: function () {
@@ -249,7 +246,9 @@ var SVTPlayApp = React.createClass({
                     width: "25%",
                     height: "100%",
                 },
-                React.createElement(ShowsList, null)
+                React.createElement(ShowsList, {
+                    dispatcher: this.props.dispatcher
+                })
             ),
             React.createElement(
                 GridArea, {
@@ -257,16 +256,19 @@ var SVTPlayApp = React.createClass({
                     height: "100%",
                     offsetLeft: "25%"
                 },
-                React.createElement(EpisodesList, null)
+                React.createElement(EpisodesList, {
+                    dispatcher: this.props.dispatcher
+                })
             )
         );
     }
 });
 
 module.exports = {
-    init: function (dispObj, mountPoint) {
-        dispatcher = dispObj;
-        React.render(React.createElement(SVTPlayApp, null), mountPoint);
+    init: function (dispatcher, mountPoint) {
+        React.render(React.createElement(SVTPlayApp, {
+            dispatcher: dispatcher
+        }), mountPoint);
     },
 
     onUnload: function () {}
