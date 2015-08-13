@@ -207,8 +207,28 @@ var EpisodesList = React.createClass({
             });
         }, this);
 
-        return React.DOM.div({className: "episodes-list"},
-                             episodes);
+        var episodeData;
+        if (this.state.episodes.length) {
+            episodeData = {
+                visible: true,
+                description: this.state.episodes[this.state.selectedIndex].description,
+                duration: this.state.episodes[this.state.selectedIndex].duration
+            };
+        }
+        else {
+            episodeData = {
+                visible: false
+            };
+        }
+
+        return React.DOM.div(
+            null,
+            React.DOM.div(
+                {className: "episodes-list"},
+                episodes
+            ),
+            React.createElement(EpisodeInfo, episodeData)
+        );
     }
 
 });
@@ -236,6 +256,26 @@ var EpisodeItem = React.createClass({
         );
     }
 });
+
+
+var EpisodeInfo = React.createClass({
+    render: function () {
+        var classString = "episode-info";
+
+        if (!this.props.visible) {
+            classString += " hidden";
+        }
+
+        return React.DOM.div({
+            className: classString
+        }, React.DOM.div({
+            className: "episode-description"
+        }, null, this.props.description), React.DOM.span({
+            className: "episode-duration"
+        }, null, this.props.duration));
+    }
+});
+
 
 var SVTPlayApp = React.createClass({
     render: function () {

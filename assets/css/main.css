@@ -36,6 +36,7 @@ html {
 
 body {
     background-color: #3E3E3E;
+    color: #EEE;
     overflow: hidden;
     margin: 0;
 }
@@ -45,8 +46,8 @@ body {
     overflow: hidden;
 }
 
-.clock {
-    color: #EEE;
+.hidden {
+    display: none;
 }
 
 .clock .time {
@@ -63,7 +64,6 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     height: 100%;
     padding: 20px;
-    color: #EEE;
     font-size: 20px;
 }
 
@@ -113,10 +113,23 @@ body {
 
 .episode-label {
     font-size: 25px;
-    color: #EEE;
     background-color: #202020;
     padding: 5px 0;
     text-align: center;
+}
+
+.episode-info {
+    position: absolute;
+    width: 50%;
+    top: 75%;
+    margin-left: 25%;
+    padding: 15px;
+    background-color: #202020;
+}
+
+.episode-description {
+    font-size: 20px;
+    margin-bottom: 10px;
 }
 
 .menu-bar {
@@ -140,7 +153,6 @@ body {
     height: 150px;
     width: 150px;
     padding: 15px 25px;
-    color: #EEE;
     border: 2px solid transparent;
     text-align: center;
 }
@@ -166,7 +178,6 @@ body {
 .control-menu-bar {
     width: 100%;
     height: 100px;
-    color: #EEE;
     font-size: 40px;
 }
 
