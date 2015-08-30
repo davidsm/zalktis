@@ -23,5 +23,7 @@ module.exports = {
         setUpListeners();
     },
 
-    onUnload: function () {}
+    onUnload: function () {
+        dispatcher.unregister("mediaplayer-play", startPlayback);
+    }
 };

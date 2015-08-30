@@ -45,5 +45,9 @@ module.exports = {
         setUpListeners();
     },
 
-    onUnload: function () {}
+    onUnload: function () {
+        dispatcher.unregister("svtplay-get-shows", getShows);
+        dispatcher.unregister("svtplay-get-episodes", getEpisodes);
+        dispatcher.unregister("svtplay-play-episode", playVideo);
+    }
 };
