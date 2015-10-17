@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import pipes
 
 import tornado.process
 import tornado.web
@@ -55,8 +56,10 @@ class OmxHandler(CommandHandler):
 
     @tornado.gen.coroutine
     def cmd_play(self):
+        logger = logging.getLogger("tornado.application")
         omx_command = ["omxplayer", "-o", "hdmi", "--timeout",
-                       "30", "-r", self.args["uri"]]
+                       "30", "-r", pipes.quote(self.args["uri"])]
+        logger.info("OMXPlayer: %s" % " ".join(omx_command))
         tornado.process.Subprocess(omx_command)
         raise tornado.gen.Return({"status": "OK"})
 
