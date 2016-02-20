@@ -96,6 +96,17 @@ module.exports = {
         var menuItems = [
             {
                 props: {
+                    imgSrc: "/static/images/home.png",
+                    label: "Home"
+                },
+                onSelect: function () {
+                    dispatcher.emit("app-select", {
+                        app: "main"
+                    });
+                }
+            },
+            {
+                props: {
                     imgSrc: "/static/images/svtplay.png",
                     label: "SVTPlay"
                 },
@@ -104,13 +115,6 @@ module.exports = {
                         app: "svtplay"
                     });
                 }
-            },
-            {
-                props: {
-                    imgSrc: "/static/images/svtplay.png",
-                    label: "Dummy"
-                },
-                onSelect: function () {}
             }
         ];
         React.render(React.createElement(MenuBar, {
