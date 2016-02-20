@@ -45,6 +45,7 @@ body {
     width: 1360px;
     height: 768px;
     background-color: #3E3E3E;
+    position: relative;
 }
 
 .grid-area {
@@ -143,7 +144,7 @@ body {
     top: -150px;
     left: 0;
     height: 150px;
-    width: 100%;
+    width: 1360px;
     background-color: rgba(0, 0, 0, 0.8);
     -webkit-transition: top 0.5s;
     transition: top 0.5s;
@@ -179,6 +180,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    background-color: #3E3E3E;
 }
 
 .control-menu-bar {

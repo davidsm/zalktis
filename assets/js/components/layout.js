@@ -8,11 +8,6 @@ exports.Grid = React.createClass({
     render: function () {
         return React.DOM.div({
             className: "grid",
-            style: {
-                //width: screen.width,
-                //height: screen.height,
-                position: "relative"
-            }
         }, this.props.children);
     }
 });
