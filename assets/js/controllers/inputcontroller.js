@@ -47,8 +47,18 @@ var keyEventMap = {
     }
 };
 
+function translateKey(event) {
+    var key = event.key || event.code;
+    switch (key) {
+    case "KeyM":
+        return "m";
+    default:
+        return key;
+    }
+}
+
 function onKey(event) {
-    var key = event.key;
+    var key = translateKey(event);
     var keyEventHandler = keyEventMap[key];
     if (keyEventHandler) {
         var data = keyEventHandler.data;
