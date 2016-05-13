@@ -23,7 +23,7 @@ function copy(from, to) {
 function bundle(file, watch) {
     var props = {
         entries: [path.join(JS_DIR, file)],
-        cache: {}, packageCache: {}, fullPaths: true
+        cache: {}, packageCache: {}
     };
     var bundler = watch ? watchify(browserify(props)) : browserify(props);
     function rebundle() {
