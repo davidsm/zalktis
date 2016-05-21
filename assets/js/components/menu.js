@@ -68,9 +68,10 @@ var MenuBar = React.createClass({
             itemProps.props.hasFocus = (index === this.state.selectedIndex);
             return React.createElement(MenuItem, itemProps.props);
         }, this);
-        return React.DOM.div(
-            {className: classString},
-            items
+        return (
+            <div className={classString}>
+                {items}
+            </div>
         );
     }
 
@@ -84,11 +85,13 @@ var MenuItem = React.createClass({
         if (this.props.hasFocus) {
             classString += "focus";
         }
-        return React.DOM.div({className: classString},
-                             React.DOM.img({src: this.props.imgSrc}),
-                             this.props.label);
+        return (
+            <div className={classString}>
+                <img src={this.props.imgSrc}/>
+                {this.props.label}
+            </div>
+        );
     }
-
 });
 
 module.exports = {
@@ -117,10 +120,10 @@ module.exports = {
                 }
             }
         ];
-        React.render(React.createElement(MenuBar, {
-            items: menuItems,
-            dispatcher: dispatcher
-        }), mountPoint);
+        React.render(
+            <MenuBar items={menuItems} dispatcher={dispatcher}/>,
+            mountPoint
+        );
     },
 
     onUnload: function () {

@@ -39,18 +39,15 @@ var Clock = React.createClass({
     },
 
     render: function () {
-        return React.DOM.div(
-            {className: "clock"},
-            React.DOM.span(
-                {className: "time"},
-                null,
-                this.timeString()
-            ),
-            React.DOM.span(
-                {className: "date"},
-                null,
-                this.dateString()
-            )
+        return (
+            <div className="clock">
+                <span className="time">
+                    {this.timeString()}
+                </span>
+                <span className="date">
+                    {this.dateString()}
+                </span>
+            </div>
         );
     }
 });
@@ -58,23 +55,24 @@ var Clock = React.createClass({
 
 var MainPage = React.createClass({
     render: function () {
-        return React.createElement(
-            Grid, null,
-            React.createElement(
-                GridArea, {
-                    width: "25%",
-                    height: "25%",
-                    offsetLeft: "75%",
-                    offsetTop: "75%"
-                }, React.createElement(Clock, null)
-            )
+        return (
+            <Grid>
+                <GridArea
+                    width="25%"
+                    height="25%"
+                    offsetLeft="75%"
+                    offsetTop="75%"
+                >
+                    <Clock/>
+                </GridArea>
+            </Grid>
         );
     }
 });
 
 module.exports = {
     init: function (dispatcher, mountPoint) {
-        React.render(React.createElement(MainPage, null), mountPoint);
+        React.render(<MainPage />, mountPoint);
     },
 
     onUnload: function () {

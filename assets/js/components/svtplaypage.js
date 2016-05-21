@@ -74,16 +74,21 @@ var ShowsList = React.createClass({
                                    this.state.shows.length);
         var shows = this.state.shows.slice(firstVisible, lastVisible)
             .map(function (show, i) {
-                return React.createElement(ShowItem, {
-                    title: show.title,
-                    hasFocus: (this.state.selectedIndex === (firstVisible + i))
-                });
+                return (
+                    <ShowItem
+                        title={show.title}
+                        hasFocus={this.state.selectedIndex === (firstVisible + i)}
+                    />
+                );
             }, this);
 
-        return React.DOM.div(
-            {className: "shows-list"},
-            React.DOM.h1(null, null, "Shows"),
-            React.DOM.ul(null, shows)
+        return (
+            <div className="shows-list">
+                <h1>Shows</h1>
+                <ul>
+                    {shows}
+                </ul>
+            </div>
         );
     }
 });
@@ -106,7 +111,11 @@ var ShowItem = React.createClass({
     render: function () {
         var classString = this.props.hasFocus ? "focus" : "";
         var title = this.truncateTitle(this.props.title);
-        return React.DOM.li({className: classString}, null, title);
+        return (
+            <li className={classString}>
+                {title}
+            </li>
+        );
     }
 });
 
@@ -198,13 +207,15 @@ var EpisodesList = React.createClass({
         var focusedIndex = visibleEpisodes.length < MAX_VISIBLE_EPISODES ? 0 : 1;
 
         var episodes = visibleEpisodes.map(function (episode, i) {
-            return React.createElement(EpisodeItem, {
-                title: episode.title,
-                thumbnail: episode.thumbnail,
-                hasFocus: (i === focusedIndex),
-                width: episodeItemSize,
-                left: positionStart + ((episodeItemSize + gutter) * i)
-            });
+            return (
+                <EpisodeItem
+                    title={episode.title}
+                    thumbnail={episode.thumbnail}
+                    hasFocus={(i === focusedIndex)}
+                    width={episodeItemSize}
+                    left={positionStart + ((episodeItemSize + gutter) * i)}
+                />
+            );
         }, this);
 
         var episodeData;
@@ -221,13 +232,13 @@ var EpisodesList = React.createClass({
             };
         }
 
-        return React.DOM.div(
-            null,
-            React.DOM.div(
-                {className: "episodes-list"},
-                episodes
-            ),
-            React.createElement(EpisodeInfo, episodeData)
+        return (
+            <div>
+                <div className="episodes-list">
+                    {episodes}
+                </div>
+                <EpisodeInfo {...episodeData}/>
+            </div>
         );
     }
 
@@ -241,18 +252,19 @@ var EpisodeItem = React.createClass({
         if (this.props.hasFocus) {
             classString += " focus";
         }
-        return React.DOM.div(
-            {
-                className: classString,
-                style: {
-                    left: this.props.left + "%",
-                    width: this.props.width + "%"
-                }
-            },
-            React.DOM.img({
-                src: this.props.thumbnail,
-            }, null),
-            React.DOM.div({className: "episode-label"}, null, this.props.title)
+
+        var style = {
+            left: this.props.left + "%",
+            width: this.props.width + "%"
+        };
+
+        return (
+            <div className={classString} style={style}>
+                <img src={this.props.thumbnail}/>
+                <div className="episode-label">
+                    {this.props.title}
+                </div>
+            </div>
         );
     }
 });
@@ -266,40 +278,31 @@ var EpisodeInfo = React.createClass({
             classString += " hidden";
         }
 
-        return React.DOM.div({
-            className: classString
-        }, React.DOM.div({
-            className: "episode-description"
-        }, null, this.props.description), React.DOM.span({
-            className: "episode-duration"
-        }, null, this.props.duration));
+        return (
+            <div className={classString}>
+                <div className="episode-description">
+                    {this.props.description}
+                </div>
+                <span className="episode-duration">
+                    {this.props.duration}
+                </span>
+            </div>
+        );
     }
 });
 
 
 var SVTPlayApp = React.createClass({
     render: function () {
-        return React.createElement(
-            Grid, null,
-            React.createElement(
-                GridArea, {
-                    width: "25%",
-                    height: "100%",
-                },
-                React.createElement(ShowsList, {
-                    dispatcher: this.props.dispatcher
-                })
-            ),
-            React.createElement(
-                GridArea, {
-                    width: "75%",
-                    height: "100%",
-                    offsetLeft: "25%"
-                },
-                React.createElement(EpisodesList, {
-                    dispatcher: this.props.dispatcher
-                })
-            )
+        return (
+            <Grid>
+                <GridArea width="25%" height="100%">
+                    <ShowsList dispatcher={this.props.dispatcher}/>
+                </GridArea>
+                <GridArea width="75%" height="100%" offsetLeft="25%">
+                    <EpisodesList dispatcher={this.props.dispatcher}/>
+                </GridArea>
+            </Grid>
         );
     }
 });

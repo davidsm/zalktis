@@ -7,6 +7,8 @@
     "watchify": "~3.3.0",
     "vinyl-source-stream": "~1.1.0",
     "react": "~0.13.3",
-    "es6-promise": "~2.3.0"
+    "es6-promise": "~2.3.0",
+    "babelify": "~7.3.0",
+    "babel-preset-react": "~6.5.0"
   }
 }

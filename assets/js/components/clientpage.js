@@ -8,14 +8,11 @@ var RemoteControlApp = React.createClass({
     displayName: "RemoteControlApp",
 
     render: function () {
-        return React.DOM.div(
-            {className: "control-area"},
-            React.createElement(MenuBar, {
-                dispatcher: this.props.dispatcher
-            }),
-            React.createElement(Navigation, {
-                dispatcher: this.props.dispatcher
-            })
+        return (
+            <div className="control-area">
+                <MenuBar dispatcher={this.props.dispatcher}/>
+                <Navigation dispatcher={this.props.dispatcher}/>
+            </div>
         );
     }
 });
@@ -24,10 +21,11 @@ var MenuBar = React.createClass({
     displayName: "MenuBar",
 
     render: function () {
-        return React.DOM.div({className: "control-menu-bar"},
-                             React.createElement(MenuButton, {
-                                 dispatcher: this.props.dispatcher
-                             }));
+        return (
+            <div className="control-menu-bar">
+                <MenuButton dispatcher={this.props.dispatcher}/>
+            </div>
+        );
     }
 });
 
@@ -44,16 +42,19 @@ var MenuButton = React.createClass({
 
     render: function () {
         var nextState = this.state.menuOpen ? "close" : "open";
-        return React.DOM.div({
-            onClick: function () {
-                this.setState({
-                    menuOpen: !this.state.menuOpen
-                });
-                this.emit("menu-toggle", {
-                    action: nextState
-                });
-            }.bind(this)
-        }, (this.state.menuOpen ? "Close" : "Open") + " Menu");
+        var onClick = function () {
+            this.setState({
+                menuOpen: !this.state.menuOpen
+            });
+            this.emit("menu-toggle", {
+                action: nextState
+            });
+        }.bind(this);
+        return (
+            <div onClick={onClick}>
+                {(this.state.menuOpen ? "Close" : "Open") + " Menu"}
+            </div>
+        );
     }
 });
 
@@ -71,37 +72,39 @@ var Navigation = React.createClass({
     },
 
     render: function () {
-        var rows = [
-            React.DOM.div(
-                {className: "navigation-button-row"}, React.createElement(ArrowButton, {
-                    direction: "up",
-                    onClick: this.onNavButtonClick.bind(this, "up")
-                })
-            ),
-            React.DOM.div(
-                {className: "navigation-button-row navigation-button-row-center"},
-                React.createElement(ArrowButton, {
-                    direction: "left",
-                    onClick: this.onNavButtonClick.bind(this, "left")
-                }),
-                React.createElement(SelectButton, {
-                    onClick: this.onSelectButtonClick
-                }),
-                React.createElement(ArrowButton, {
-                    direction: "right",
-                    onClick: this.onNavButtonClick.bind(this, "right")
-                })
-            ),
-            React.DOM.div(
-                {className: "navigation-button-row"}, React.createElement(ArrowButton, {
-                    direction: "down",
-                    onClick: this.onNavButtonClick.bind(this, "down")
-                })
-            )
-        ];
+        var rows = [(
+            <div className="navigation-button-row">
+                <ArrowButton
+                    direction="up"
+                    onClick={this.onNavButtonClick.bind(this, "up")}
+                />
+            </div>
+        ), (
+            <div className="navigation-button-row navigation-button-row-center">
+                <ArrowButton
+                    direction="left"
+                    onClick={this.onNavButtonClick.bind(this, "left")}
+                />
+                <SelectButton onClick={this.onSelectButtonClick}/>
+                <ArrowButton
+                    direction="right"
+                    onClick={this.onNavButtonClick.bind(this, "right")}
+                />
+            </div>
+        ), (
+            <div className="navigation-button-row">
+                <ArrowButton
+                    direction="down"
+                    onClick={this.onNavButtonClick.bind(this, "down")}
+                />
+            </div>
+        )];
 
-        return React.DOM.div({className: "navigator"},
-                             rows);
+        return (
+            <div className="navigator">
+                {rows}
+            </div>
+        );
     }
 });
 
@@ -109,12 +112,14 @@ var ArrowButton = React.createClass({
     displayName: "ArrowButton",
 
     render: function () {
-        return React.DOM.div({
-            className: "arrow-button arrow-button-" + this.props.direction,
-            onClick: this.props.onClick
-        }, React.DOM.div({
-            className: "arrow-" + this.props.direction
-        }));
+        return (
+            <div
+                className={"arrow-button arrow-button" + this.props.direction}
+                onClick={this.props.onClick}
+            >
+                <div className={"arrow-" + this.props.direction}/>
+            </div>
+        );
     }
 });
 
@@ -122,18 +127,21 @@ var SelectButton = React.createClass({
     displayName: "SelectButton",
 
     render: function () {
-        return React.DOM.div({
-            className: "select-button",
-            onClick: this.props.onClick
-        });
+        return (
+            <div
+                className="select-button"
+                onClick={this.props.onClick}
+            />
+        );
     }
 });
 
 module.exports = {
     init: function (dispatcher, mountPoint) {
-        React.render(React.createElement(RemoteControlApp, {
-            dispatcher: dispatcher
-        }), mountPoint);
+        React.render(
+            <RemoteControlApp dispatcher={dispatcher}/>,
+            mountPoint
+        );
     },
 
     onUnload: function () {

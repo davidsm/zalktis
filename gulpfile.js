@@ -3,6 +3,7 @@
 var gulp = require("gulp");
 var browserify = require("browserify");
 var watchify = require("watchify");
+var babelify = require("babelify");
 var source = require("vinyl-source-stream");
 
 var path = require("path");
@@ -26,6 +27,7 @@ function bundle(file, watch) {
         cache: {}, packageCache: {}
     };
     var bundler = watch ? watchify(browserify(props)) : browserify(props);
+    bundler.transform(babelify, {presets: ["react"]});
     function rebundle() {
         console.log("Building " + file);
         return bundler.bundle()
