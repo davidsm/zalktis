@@ -309,9 +309,10 @@ var SVTPlayApp = React.createClass({
 
 module.exports = {
     init: function (dispatcher, mountPoint) {
-        React.render(React.createElement(SVTPlayApp, {
-            dispatcher: dispatcher
-        }), mountPoint);
+        React.render(
+            <SVTPlayApp dispatcher={dispatcher}/>,
+            mountPoint
+        );
     },
 
     onUnload: function () {}

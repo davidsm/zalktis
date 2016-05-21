@@ -66,7 +66,9 @@ var MenuBar = React.createClass({
         classString += this.state.open ? "open" : "";
         var items = this.props.items.map(function (itemProps, index) {
             itemProps.props.hasFocus = (index === this.state.selectedIndex);
-            return React.createElement(MenuItem, itemProps.props);
+            return (
+                <MenuItem {...itemProps.props}/>
+            );
         }, this);
         return (
             <div className={classString}>
