@@ -15,7 +15,7 @@ function getShows() {
 
 function getEpisodes(data) {
     zalktis.svtplay.getEpisodesForShow({
-        show_url: data.url
+        id: data.id
     }).then(function (episodes) {
         dispatcher.emit("svtplay-episodes-updated", {
             episodes: episodes

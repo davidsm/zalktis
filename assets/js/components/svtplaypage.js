@@ -53,7 +53,7 @@ var ShowsList = React.createClass({
     _select: function () {
         if (this.state.hasFocus) {
             this.emit("svtplay-get-episodes", {
-                url: this.state.shows[this.state.selectedIndex].url
+                id: this.state.shows[this.state.selectedIndex].id
             });
         }
     },

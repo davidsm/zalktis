@@ -55,6 +55,7 @@ class OmxHandler(CommandHandler):
 
     @tornado.gen.coroutine
     def cmd_play(self):
+        logging.info("Playing %s" % self.args["uri"])
         omx_command = ["omxplayer", "-o", "hdmi", "--timeout",
                        "30", "-r", self.args["uri"]]
         tornado.process.Subprocess(omx_command)
@@ -83,7 +84,7 @@ class SVTPlayHandler(CommandHandler):
     @tornado.gen.coroutine
     def cmd_get_episodes_for_show(self):
         scraper = zalktis.lib.svtscraper.SVTScraper()
-        episodes = yield scraper.get_episodes_for_show(self.args["show_url"])
+        episodes = yield scraper.get_episodes_for_show(self.args["id"])
         raise tornado.gen.Return({"status": "OK", "value": episodes})
 
     @tornado.gen.coroutine
