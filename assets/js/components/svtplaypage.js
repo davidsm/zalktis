@@ -6,6 +6,7 @@ var EventEmitter = require("./mixins").EventEmitter;
 var layout = require("./layout");
 var Grid = layout.Grid;
 var GridArea = layout.GridArea;
+var format = require("../common/format");
 
 
 var MAX_VISIBLE_SHOWS = 20;
@@ -284,7 +285,7 @@ var EpisodeInfo = React.createClass({
                     {this.props.description}
                 </div>
                 <span className="episode-duration">
-                    {this.props.duration}
+                    {format.formatTime(this.props.duration)}
                 </span>
             </div>
         );
