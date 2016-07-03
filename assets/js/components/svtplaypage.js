@@ -223,8 +223,8 @@ var EpisodesList = React.createClass({
         if (this.state.episodes.length) {
             episodeData = {
                 visible: true,
-                description: this.state.episodes[this.state.selectedIndex].description,
-                duration: this.state.episodes[this.state.selectedIndex].duration
+                description: visibleEpisodes[focusedIndex].description,
+                duration: visibleEpisodes[focusedIndex].duration
             };
         }
         else {
