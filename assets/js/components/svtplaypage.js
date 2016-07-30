@@ -204,8 +204,8 @@ var EpisodesList = React.createClass({
         // Percent
         var episodeItemSize = 50;
         var gutter = 5;
-        var positionStart = visibleEpisodes.length < MAX_VISIBLE_EPISODES ? 25 : -30;
-        var focusedIndex = visibleEpisodes.length < MAX_VISIBLE_EPISODES ? 0 : 1;
+        var positionStart = visibleEpisodes.length <= 1 ? 25 : -30;
+        var focusedIndex = visibleEpisodes.length <= 1 ? 0 : 1;
 
         var episodes = visibleEpisodes.map(function (episode, i) {
             return (
