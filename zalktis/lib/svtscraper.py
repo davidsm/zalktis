@@ -5,7 +5,7 @@ import json
 
 _URL_BASE = "http://www.svtplay.se"
 _URL_API_BASE = "%s/api" % _URL_BASE
-_URL_ALL_SHOWS = "%s/programs_page" % _URL_API_BASE
+_URL_ALL_SHOWS = "%s/all_titles" % _URL_API_BASE
 _URL_SHOW_DETAILS = "%s/title_page;" % _URL_API_BASE
 
 
@@ -14,7 +14,7 @@ class SVTScraper(object):
     def _format_show(self, show):
         return {
             "title": show["title"],
-            "id": show["urlFriendlyTitle"]
+            "id": show["contentUrl"]
         }
 
     def _format_episode(self, episode):
@@ -27,10 +27,7 @@ class SVTScraper(object):
         }
 
     def _extract_shows(self, json_data):
-        shows = []
-        for shows_subset in json_data["letters"].itervalues():
-            shows.extend(shows_subset)
-        return shows
+        return json_data
 
     def _build_episode_url(self, relative_url):
         return "%s%s" % (_URL_BASE, relative_url)
