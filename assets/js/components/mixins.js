@@ -18,8 +18,8 @@ exports.Focusable = {
         });
     },
 
-    onMenuToggle: function (data) {
-        if (data.action === "open" && this.state.hasFocus) {
+    onMenuChange: function (data) {
+        if (data.open && this.state.hasFocus) {
             this.retainFocus = true;
             this.setState({
                 hasFocus: false
@@ -43,7 +43,7 @@ exports.Focusable = {
 
     componentWillMount: function () {
         this.on("focus-change", this.onFocusChange);
-        this.on("menu-toggle", this.onMenuToggle);
+        this.on("menu-change", this.onMenuChange);
     }
 
 };

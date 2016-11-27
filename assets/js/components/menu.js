@@ -15,9 +15,11 @@ var MenuBar = React.createClass({
         };
     },
 
-    _toggle: function (action) {
+    _toggle: function () {
+        var newState = !this.state.open;
+        this.emit("menu-change", {open: newState});
         this.setState({
-            open: action === "open"
+            open: newState
         });
     },
 
@@ -45,14 +47,12 @@ var MenuBar = React.createClass({
     _select: function () {
         if (this.state.open) {
             this.props.items[this.state.selectedIndex].onSelect();
-            window.setTimeout(this._toggle.bind(this, "close"), 500);
+            window.setTimeout(this._toggle, 500);
         }
     },
 
     componentWillMount: function () {
-        this.on("menu-toggle", function (data) {
-            this._toggle(data.action);
-        }.bind(this));
+        this.on("menu-toggle", this._toggle);
 
         this.on("navigate", function (data) {
             this._navigate(data.direction);

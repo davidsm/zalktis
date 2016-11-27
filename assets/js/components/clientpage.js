@@ -34,25 +34,13 @@ var MenuButton = React.createClass({
 
     mixins: [EventEmitter],
 
-    getInitialState: function () {
-        return {
-            menuOpen: false
-        };
-    },
-
     render: function () {
-        var nextState = this.state.menuOpen ? "close" : "open";
         var onClick = function () {
-            this.setState({
-                menuOpen: !this.state.menuOpen
-            });
-            this.emit("menu-toggle", {
-                action: nextState
-            });
+            this.emit("menu-toggle", {});
         }.bind(this);
         return (
             <div onClick={onClick}>
-                {(this.state.menuOpen ? "Close" : "Open") + " Menu"}
+                Menu
             </div>
         );
     }
