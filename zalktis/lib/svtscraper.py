@@ -1,6 +1,7 @@
 import tornado.gen
 from tornado.httpclient import AsyncHTTPClient
 import json
+import urlparse
 
 
 _URL_BASE = "http://www.svtplay.se"
@@ -39,6 +40,10 @@ class SVTScraper(object):
             prefix = ""
         return "%s%s" % (prefix, response_url.replace("{format}", "large"))
 
+    def _strip_query_string(self, url):
+        split_url = urlparse.urlsplit(url)
+        return urlparse.urlunsplit((split_url.scheme, split_url.netloc, split_url.path, "", ""))
+
     @tornado.gen.coroutine
     def get_all_shows(self):
         response = yield AsyncHTTPClient().fetch(_URL_ALL_SHOWS)
@@ -63,4 +68,9 @@ class SVTScraper(object):
         parsed_response = json.loads(response.body)
         for video_listing in parsed_response["video"]["videoReferences"]:
             if video_listing["playerType"] == "ios":
-                raise tornado.gen.Return(video_listing["url"])
+                url = video_listing["url"]
+                # SVTPlay's weird query strings can sometimes confuse OMXPlayer
+                # to the point where it won't interpret the URL properly.
+                # As the video URL seems to work fine without any query options,
+                # just use the path
+                raise tornado.gen.Return(self._strip_query_string(url))
