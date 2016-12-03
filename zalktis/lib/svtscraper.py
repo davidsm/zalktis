@@ -13,7 +13,7 @@ class SVTScraper(object):
 
     def _format_show(self, show):
         return {
-            "title": show["title"],
+            "title": show["programTitle"],
             "id": show["contentUrl"]
         }
 
