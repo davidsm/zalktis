@@ -6,7 +6,7 @@ import urlparse
 
 _URL_BASE = "http://www.svtplay.se"
 _URL_API_BASE = "%s/api" % _URL_BASE
-_URL_ALL_SHOWS = "%s/all_titles" % _URL_API_BASE
+_URL_ALL_SHOWS = "%s/all_titles_and_singles" % _URL_API_BASE
 _URL_SHOW_DETAILS = "%s/title_page;" % _URL_API_BASE
 
 
