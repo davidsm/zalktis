@@ -8,6 +8,7 @@ _URL_BASE = "http://www.svtplay.se"
 _URL_API_BASE = "%s/api" % _URL_BASE
 _URL_ALL_SHOWS = "%s/all_titles_and_singles" % _URL_API_BASE
 _URL_SHOW_EPISODES = "%s/title_episodes_by_article_id" % _URL_API_BASE
+_URL_SHOW_EPISODES_ALT = "%s/title_episodes_by_episode_article_id" % _URL_API_BASE
 
 
 class SVTScraper(object):
@@ -63,14 +64,16 @@ class SVTScraper(object):
         # Here you can extract the id from the path, and use it immediately with the show episodes endpoint.
         if show_url.startswith("/video/"):
             show_id = show_url.split("/")[2]
+            url = "%s?articleId=%s" % (_URL_SHOW_EPISODES_ALT, show_id)
         else:
             # This is a bit sloppy as there could conceivably be more formats...
             slug = show_url.strip("/")
             title_response = yield AsyncHTTPClient().fetch("%s/title?slug=%s" % (_URL_API_BASE, slug))
             parsed_title_response = json.loads(title_response.body)
             show_id = parsed_title_response["articleId"]
+            url = "%s?articleId=%s" % (_URL_SHOW_EPISODES, show_id)
 
-        response = yield AsyncHTTPClient().fetch("%s?articleId=%s" % (_URL_SHOW_EPISODES, show_id))
+        response = yield AsyncHTTPClient().fetch(url)
         parsed_response = json.loads(response.body)
         formatted_episodes = [self._format_episode(episode) for episode in parsed_response]
         raise tornado.gen.Return(formatted_episodes)
