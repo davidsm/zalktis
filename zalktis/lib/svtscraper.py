@@ -91,3 +91,20 @@ class SVTScraper(object):
                 # As the video URL seems to work fine without any query options,
                 # just use the path
                 raise tornado.gen.Return(self._strip_query_string(url))
+
+
+if __name__ == "__main__":
+    import tornado.ioloop
+
+    @tornado.gen.coroutine
+    def self_test():
+        scraper = SVTScraper()
+        shows = yield scraper.get_all_shows()
+        print shows[:5]
+        episodes = yield scraper.get_episodes_for_show(shows[0]["id"])
+        print episodes[:2]
+        video_url = yield scraper.get_video_url_for_episode(episodes[0]["url"])
+        print video_url
+
+    io_loop = tornado.ioloop.IOLoop.current()
+    io_loop.run_sync(self_test)
