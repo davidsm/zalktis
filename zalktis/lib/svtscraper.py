@@ -7,7 +7,7 @@ import urlparse
 _URL_BASE = "http://www.svtplay.se"
 _URL_API_BASE = "%s/api" % _URL_BASE
 _URL_ALL_SHOWS = "%s/all_titles_and_singles" % _URL_API_BASE
-_URL_SHOW_DETAILS = "%s/title_page;" % _URL_API_BASE
+_URL_SHOW_EPISODES = "%s/title_episodes_by_article_id" % _URL_API_BASE
 
 
 class SVTScraper(object):
@@ -54,11 +54,25 @@ class SVTScraper(object):
         raise tornado.gen.Return(sorted(all_shows, key=lambda s: s["title"]))
 
     @tornado.gen.coroutine
-    def get_episodes_for_show(self, show_id):
-        response = yield AsyncHTTPClient().fetch("%stitle=%s" % (_URL_SHOW_DETAILS, show_id))
+    def get_episodes_for_show(self, show_url):
+        # SVTPlay uses two different formats for getting an episode listing from the shows listing:
+        # First is /<name-of-show>. Here you first need to get the show page by the title?slug=<name-of-show>,
+        # That call will give you an episode id, which you can use with the show episodes endpoint.
+        #
+        # The second format is /video/<id_of_show>/whatever/whatever
+        # Here you can extract the id from the path, and use it immediately with the show episodes endpoint.
+        if show_url.startswith("/video/"):
+            show_id = show_url.split("/")[2]
+        else:
+            # This is a bit sloppy as there could conceivably be more formats...
+            slug = show_url.strip("/")
+            title_response = yield AsyncHTTPClient().fetch("%s/title?slug=%s" % (_URL_API_BASE, slug))
+            parsed_title_response = json.loads(title_response.body)
+            show_id = parsed_title_response["articleId"]
+
+        response = yield AsyncHTTPClient().fetch("%s?articleId=%s" % (_URL_SHOW_EPISODES, show_id))
         parsed_response = json.loads(response.body)
-        episodes = parsed_response["relatedVideos"]["episodes"]
-        formatted_episodes = [self._format_episode(episode) for episode in episodes]
+        formatted_episodes = [self._format_episode(episode) for episode in parsed_response]
         raise tornado.gen.Return(formatted_episodes)
 
     @tornado.gen.coroutine
