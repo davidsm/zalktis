@@ -113,7 +113,7 @@ module.exports = {
             {
                 props: {
                     imgSrc: "/static/images/svtplay.png",
-                    label: "SVTPlay"
+                    label: "SVT Play"
                 },
                 onSelect: function () {
                     dispatcher.emit("app-select", {
