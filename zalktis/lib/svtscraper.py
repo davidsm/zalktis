@@ -29,7 +29,9 @@ class SVTScraper(object):
             "url": self._build_episode_url(episode["versions"][0]["id"]),
             "thumbnail": self._build_thumbnail_url(episode["thumbnail"]),
             "description": episode.get("description", ""),
-            "duration": episode["materialLength"]
+            "duration": episode["materialLength"],
+            "season": episode["season"],
+            "episode": episode["episodeNumber"]
         }
 
     def _extract_shows(self, json_data):
@@ -80,7 +82,8 @@ class SVTScraper(object):
         logger.debug("Fetching episodes from %s", url)
         response = yield AsyncHTTPClient().fetch(url)
         parsed_response = json.loads(response.body)
-        formatted_episodes = [self._format_episode(episode) for episode in parsed_response]
+        formatted_episodes = sorted([self._format_episode(episode) for episode in parsed_response],
+                                    key=lambda e: (e["season"], e["episode"]))
         raise tornado.gen.Return(formatted_episodes)
 
     @tornado.gen.coroutine
