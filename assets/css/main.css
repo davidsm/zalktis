@@ -88,8 +88,13 @@ body {
     line-height: 22px;
 }
 
+.shows-list.focus ul li.focus {
+    /* #D77C30 */
+    border: 2px solid rgba(215, 124, 48, 1);
+}
+
 .shows-list ul li.focus {
-    border: 2px solid #D77C30;
+    border: 2px solid rgba(215, 124, 48, 0.5);
 }
 
 .shows-list h1 {
@@ -109,8 +114,12 @@ body {
     border: 4px solid transparent;
 }
 
-.episode-item.focus {
-    border: 4px solid #D77C30;
+.episodes-list.focus .episode-item.focus {
+    border: 4px solid rgba(215, 124, 48, 1);
+}
+
+.episodes-list .episode-item.focus {
+    border: 4px solid rgba(215, 124, 48, 0.5);
 }
 
 .episode-item img {

@@ -44,6 +44,10 @@ var keyEventMap = {
         data: {
             direction: "down"
         }
+    },
+    Backspace: {
+        event: "return",
+        data: {}
     }
 };
 

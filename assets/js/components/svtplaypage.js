@@ -59,12 +59,22 @@ var ShowsList = React.createClass({
         }
     },
 
+    _return: function () {
+        // This is obviously very crude,
+        // and will work only as long as
+        // there are only two different sections
+        if (!this.state.hasFocus) {
+            this.takeFocus();
+        }
+    },
+
     componentWillMount: function () {
         this.on("svtplay-shows-updated", this._onShows);
         this.emit("svtplay-get-shows", {});
 
         this.on("navigate", this._navigate);
         this.on("select", this._select);
+        this.on("return", this._return);
         this.takeFocus();
     },
 
@@ -83,8 +93,13 @@ var ShowsList = React.createClass({
                 );
             }, this);
 
+        var classString = "shows-list";
+        if (this.state.hasFocus) {
+            classString += " focus";
+        }
+
         return (
-            <div className="shows-list">
+            <div className={classString}>
                 <h1>Shows</h1>
                 <ul>
                     {shows}
@@ -233,9 +248,14 @@ var EpisodesList = React.createClass({
             };
         }
 
+        var classString = "episodes-list";
+        if (this.state.hasFocus) {
+            classString += " focus";
+        }
+
         return (
             <div>
-                <div className="episodes-list">
+                <div className={classString}>
                     {episodes}
                 </div>
                 <EpisodeInfo {...episodeData}/>
