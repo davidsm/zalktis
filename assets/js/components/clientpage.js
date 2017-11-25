@@ -23,9 +23,28 @@ var MenuBar = React.createClass({
     render: function () {
         return (
             <div className="control-menu-bar">
+                <BackButton dispatcher={this.props.dispatcher}/>
                 <MenuButton dispatcher={this.props.dispatcher}/>
             </div>
         );
+    }
+});
+
+var BackButton = React.createClass({
+    displayName: "BackButton",
+
+    mixins: [EventEmitter],
+
+    render: function () {
+        var onClick = function () {
+            this.emit("return", {});
+        }.bind(this);
+        return (
+            <div onClick={onClick} className="control-menu-bar-item">
+            &lt;
+            </div>
+        );
+
     }
 });
 
@@ -39,7 +58,7 @@ var MenuButton = React.createClass({
             this.emit("menu-toggle", {});
         }.bind(this);
         return (
-            <div onClick={onClick}>
+            <div onClick={onClick} className="control-menu-bar-item">
                 Menu
             </div>
         );

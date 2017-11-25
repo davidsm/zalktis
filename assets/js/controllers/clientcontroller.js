@@ -17,6 +17,10 @@ function setUpConnection() {
         dispatcher.on("select", function (data) {
             connection.emit("select", data);
         });
+
+        dispatcher.on("return", function (data) {
+            connection.emit("return", data);
+        });
     });
 }
 

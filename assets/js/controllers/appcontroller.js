@@ -20,6 +20,10 @@ function setUpConnection() {
         connection.on("select", function (data) {
             dispatcher.emit("select", data);
         });
+
+        connection.on("return", function (data) {
+            dispatcher.emit("return", data);
+        });
     });
 }
 
