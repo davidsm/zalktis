@@ -124,7 +124,7 @@ var ArrowButton = React.createClass({
                 className={"arrow-button arrow-button" + this.props.direction}
                 onClick={this.props.onClick}
             >
-                <div className={"arrow-" + this.props.direction}/>
+                <div className={"arrow arrow-" + this.props.direction}/>
             </div>
         );
     }

@@ -231,38 +231,52 @@ body {
     background-color: #C35900;
 }
 
+.select-button:active {
+    background-color: #AA4000;
+}
+
 .navigation-button-row-center .arrow-button {
     margin: 0;
 }
 
-.arrow-up {
+.arrow-button .arrow {
     width: 0;
     height: 0;
     border-style: solid;
+}
+
+.arrow-up {
     border-width: 0 50px 86.6px 50px;
     border-color: transparent transparent #C35900 transparent;
 }
 
+.arrow-up:active {
+    border-color: transparent transparent #AA4000 transparent;
+}
+
 .arrow-down {
-    width: 0;
-    height: 0;
-    border-style: solid;
     border-width: 86.6px 50px 0 50px;
     border-color: #C35900 transparent transparent transparent;
 }
 
+.arrow-down:active {
+    border-color: #AA4000 transparent transparent transparent;
+}
+
 .arrow-right {
-    width: 0;
-    height: 0;
-    border-style: solid;
     border-width: 50px 0 50px 86.6px;
     border-color: transparent transparent transparent #C35900;
 }
 
+.arrow-right:active {
+    border-color: transparent transparent transparent #AA4000;
+}
+
 .arrow-left {
-    width: 0;
-    height: 0;
-    border-style: solid;
     border-width: 50px 86.6px 50px 0;
     border-color: transparent #C35900 transparent transparent;
+}
+
+.arrow-left:active {
+    border-color: transparent #AA4000 transparent transparent;
 }
