@@ -10,21 +10,7 @@ var RemoteControlApp = React.createClass({
     render: function () {
         return (
             <div className="control-area">
-                <MenuBar dispatcher={this.props.dispatcher}/>
                 <Navigation dispatcher={this.props.dispatcher}/>
-            </div>
-        );
-    }
-});
-
-var MenuBar = React.createClass({
-    displayName: "MenuBar",
-
-    render: function () {
-        return (
-            <div className="control-menu-bar">
-                <BackButton dispatcher={this.props.dispatcher}/>
-                <MenuButton dispatcher={this.props.dispatcher}/>
             </div>
         );
     }
@@ -40,8 +26,10 @@ var BackButton = React.createClass({
             this.emit("return", {});
         }.bind(this);
         return (
-            <div onClick={onClick} className="control-menu-bar-item">
+            <div className="remote-button">
+                <div className="button-content" onClick={onClick}>
             &lt;
+                </div>
             </div>
         );
 
@@ -58,8 +46,10 @@ var MenuButton = React.createClass({
             this.emit("menu-toggle", {});
         }.bind(this);
         return (
-            <div onClick={onClick} className="control-menu-bar-item">
-                Menu
+            <div className="remote-button">
+                <div className="button-content" onClick={onClick}>
+                    Menu
+                </div>
             </div>
         );
     }
@@ -81,11 +71,17 @@ var Navigation = React.createClass({
     render: function () {
         var rows = [(
             <div className="navigation-button-row">
+                <div className="remote-col remote-col-left">
+                    <BackButton dispatcher={this.props.dispatcher}/>
+                </div>
                 <div className="remote-col remote-col-center">
                     <ArrowButton
                         direction="up"
                         onClick={this.onNavButtonClick.bind(this, "up")}
                     />
+                </div>
+                <div className="remote-col remote-col-right">
+                    <MenuButton dispatcher={this.props.dispatcher}/>
                 </div>
             </div>
         ), (
@@ -121,6 +117,17 @@ var Navigation = React.createClass({
         return (
             <div className="navigator">
                 {rows}
+            </div>
+        );
+    }
+});
+
+// Just exists to take up space...
+var DummyButton = React.createClass({
+    render: function () {
+        return (
+            <div className="remote-button">
+                <div className="button-content"/>
             </div>
         );
     }
