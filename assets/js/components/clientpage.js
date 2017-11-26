@@ -27,8 +27,8 @@ var BackButton = React.createClass({
         }.bind(this);
         return (
             <div className="remote-button">
-                <div className="button-content" onClick={onClick}>
-            &lt;
+                <div className="button-content">
+                    <i className="fa fa-caret-left" onClick={onClick}/>
                 </div>
             </div>
         );
@@ -47,8 +47,8 @@ var MenuButton = React.createClass({
         }.bind(this);
         return (
             <div className="remote-button">
-                <div className="button-content" onClick={onClick}>
-                    Menu
+                <div className="button-content">
+                    <i className="fa fa-bars" onClick={onClick}/>
                 </div>
             </div>
         );

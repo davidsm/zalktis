@@ -187,12 +187,19 @@ body {
 
 .remote-col-center .button-content {
     margin: auto;
-    text-align: center;
 }
 
 .remote-col-right .button-content {
     margin-left: auto;
-    text-align: right;
+}
+
+.button-content {
+    text-align: center;
+    font-size: 90px;
+}
+
+.button-content i:active {
+    color: #D5D5D5;
 }
 
 .select-button {

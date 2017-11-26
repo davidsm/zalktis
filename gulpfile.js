@@ -11,7 +11,7 @@ var path = require("path");
 var ASSET_BASE = "assets";
 var IMAGE_SRC = path.join(ASSET_BASE, "images/*.@(png|jpg)");
 var CSS_SRC = path.join(ASSET_BASE, "css/*.css");
-var FONT_SRC = path.join(ASSET_BASE, "fonts/*.woff");
+var FONT_SRC = path.join(ASSET_BASE, "fonts/*.woff*");
 var JS_DIR = path.join(ASSET_BASE, "js");
 
 var DIST = "dist";
