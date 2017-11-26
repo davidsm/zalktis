@@ -215,13 +215,20 @@ body {
 
 .navigation-button-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    height: 100px;
 }
 
-.arrow-button {
-    width: 100px;
-    height: 100px;
+.remote-col {
+    flex-basis: 33%;
+}
+
+.remote-col-center .button-content {
     margin: auto;
+}
+
+.remote-col-right .button-content {
+    margin-left: auto;
 }
 
 .select-button {
@@ -235,11 +242,7 @@ body {
     background-color: #AA4000;
 }
 
-.navigation-button-row-center .arrow-button {
-    margin: 0;
-}
-
-.arrow-button .arrow {
+.arrow {
     width: 0;
     height: 0;
     border-style: solid;

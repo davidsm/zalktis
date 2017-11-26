@@ -81,29 +81,40 @@ var Navigation = React.createClass({
     render: function () {
         var rows = [(
             <div className="navigation-button-row">
-                <ArrowButton
-                    direction="up"
-                    onClick={this.onNavButtonClick.bind(this, "up")}
-                />
+                <div className="remote-col remote-col-center">
+                    <ArrowButton
+                        direction="up"
+                        onClick={this.onNavButtonClick.bind(this, "up")}
+                    />
+                </div>
             </div>
         ), (
             <div className="navigation-button-row navigation-button-row-center">
-                <ArrowButton
-                    direction="left"
-                    onClick={this.onNavButtonClick.bind(this, "left")}
-                />
-                <SelectButton onClick={this.onSelectButtonClick}/>
-                <ArrowButton
-                    direction="right"
-                    onClick={this.onNavButtonClick.bind(this, "right")}
-                />
+                <div className="remote-col remote-col-left">
+                    <ArrowButton
+                        direction="left"
+                        onClick={this.onNavButtonClick.bind(this, "left")}
+                    />
+                </div>
+                <div className="remote-col remote-col-center">
+                    <SelectButton onClick={this.onSelectButtonClick}/>
+                </div>
+                <div className="remote-col remote-col-right">
+                    <ArrowButton
+                        direction="right"
+                        onClick={this.onNavButtonClick.bind(this, "right")}
+                    />
+                </div>
+
             </div>
         ), (
             <div className="navigation-button-row">
-                <ArrowButton
-                    direction="down"
-                    onClick={this.onNavButtonClick.bind(this, "down")}
-                />
+                <div className="remote-col remote-col-center">
+                    <ArrowButton
+                        direction="down"
+                        onClick={this.onNavButtonClick.bind(this, "down")}
+                    />
+                </div>
             </div>
         )];
 
@@ -120,11 +131,11 @@ var ArrowButton = React.createClass({
 
     render: function () {
         return (
-            <div
-                className={"arrow-button arrow-button" + this.props.direction}
-                onClick={this.props.onClick}
-            >
-                <div className={"arrow arrow-" + this.props.direction}/>
+            <div className="remote-button">
+                <div
+                    className={"button-content arrow arrow-" + this.props.direction}
+                    onClick={this.props.onClick}
+                />
             </div>
         );
     }
@@ -135,10 +146,12 @@ var SelectButton = React.createClass({
 
     render: function () {
         return (
-            <div
-                className="select-button"
-                onClick={this.props.onClick}
-            />
+            <div className="remote-button">
+                <div
+                    className="button-content select-button"
+                    onClick={this.props.onClick}
+                />
+            </div>
         );
     }
 });
