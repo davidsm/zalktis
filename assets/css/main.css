@@ -3,33 +3,6 @@
     box-sizing: border-box;
 }
 
-@font-face {
-  font-family: 'fontello';
-  src: url('../fonts/icon-font.woff?47626531');
-  font-weight: normal;
-  font-style: normal;
-}
-
-[class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "fontello";
-  font-style: normal;
-  font-weight: normal;
-  speak: none;
-
-  display: inline-block;
-  text-decoration: inherit;
-  width: 1em;
-  margin-right: .2em;
-  text-align: center;
-
-  /* For safety - reset parent styles, that can break glyph codes*/
-  font-variant: normal;
-  text-transform: none;
-
-}
-
-.icon-off:before { content: '\e800'; }
-
 html {
     font-family: Roboto, sans-serif;
 }
