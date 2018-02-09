@@ -41,6 +41,8 @@ class SVTScraper(object):
         return "%s/%s" % (_URL_VIDEO_API_BASE, relative_url)
 
     def _build_thumbnail_url(self, response_url):
+        if not response_url:
+            return ""
         if response_url.startswith("//"):
             prefix = "https:"
         else:
