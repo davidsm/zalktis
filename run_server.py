@@ -21,6 +21,11 @@ if __name__ == "__main__":
         }
     app = tornado.web.Application(zalktis.routes.routes, **settings)
     port = os.getenv("ZALKTIS_PORT") or DEFAULT_PORT
+    log_debug = os.getenv("ZALKTIS_DEBUG")
+
+    if log_debug == "true":
+        import logging
+        logging.getLogger("tornado.application").setLevel(logging.DEBUG)
 
     app.listen(port)
     tornado.ioloop.IOLoop.current().start()
