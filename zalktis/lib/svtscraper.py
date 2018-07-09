@@ -3,6 +3,9 @@ from tornado.httpclient import AsyncHTTPClient
 import json
 import urlparse
 import logging
+import datetime
+import dateutil.parser
+import dateutil.tz
 
 
 _URL_BASE = "https://www.svtplay.se"
@@ -39,6 +42,20 @@ class SVTScraper(object):
 
     def _build_episode_url(self, relative_url):
         return "%s/%s" % (_URL_VIDEO_API_BASE, relative_url)
+
+    def _is_available_now(self, episode):
+        date_string = episode.get("validFrom")
+        if not date_string:
+            logger.warning("No validFrom key. Episode not included")
+            return False
+
+        now = datetime.datetime.now(dateutil.tz.UTC)
+        valid_from = dateutil.parser.parse(date_string)
+        return now > valid_from
+
+    def _extract_episodes(self, json_data):
+        return [episode for episode in json_data
+                if self._is_available_now(episode)]
 
     def _build_thumbnail_url(self, response_url):
         if not response_url:
@@ -84,7 +101,8 @@ class SVTScraper(object):
         logger.debug("Fetching episodes from %s", url)
         response = yield AsyncHTTPClient().fetch(url)
         parsed_response = json.loads(response.body)
-        formatted_episodes = sorted([self._format_episode(episode) for episode in parsed_response],
+        formatted_episodes = sorted([self._format_episode(episode) for episode in
+                                     self._extract_episodes(parsed_response)],
                                     key=lambda e: (e["season"], e["episode"]))
         raise tornado.gen.Return(formatted_episodes)
 
