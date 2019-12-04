@@ -1,19 +1,23 @@
 import tornado.gen
 from tornado.httpclient import AsyncHTTPClient
+from tornado.httputil import url_concat
 import json
 import urlparse
 import logging
-import datetime
-import dateutil.parser
-import dateutil.tz
 
 
 _URL_BASE = "https://www.svtplay.se"
 _URL_API_BASE = "%s/api" % _URL_BASE
 _URL_ALL_SHOWS = "%s/all_titles_and_singles" % _URL_API_BASE
-_URL_SHOW_EPISODES = "%s/title_episodes_by_article_id" % _URL_API_BASE
-_URL_SHOW_EPISODES_ALT = "%s/title_episodes_by_episode_article_id" % _URL_API_BASE
-_URL_VIDEO_API_BASE = "https://api.svt.se/videoplayer-api/video"
+
+_URL_GRAPHQL_API = "https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client"
+_URL_VIDEO_API_BASE = "https://api.svt.se/video"
+
+_URL_THUMBNAIL_BASE = "https://www.svtstatic.se/image"
+
+_SHASUM_TITLE_PAGE = "4122efcb63970216e0cfb8abb25b74d1ba2bb7e780f438bbee19d92230d491c5"
+_SHASUM_VIDEO_PAGE = "ae75c500d4f6f8743f6673f8ade2f8af89fb019d4b23f464ad84658734838c78"
+
 
 logger = logging.getLogger("tornado.application")
 
@@ -26,85 +30,115 @@ class SVTScraper(object):
             "id": show["contentUrl"]
         }
 
-    def _format_episode(self, episode):
-        return {
-            "title": episode["title"],
-            "url": self._build_episode_url(episode["versions"][0]["id"]),
-            "thumbnail": self._build_thumbnail_url(episode["thumbnail"]),
-            "description": episode.get("description", ""),
-            "duration": episode["materialLength"],
-            "season": episode["season"],
-            "episode": episode["episodeNumber"]
+    def _build_episode_url(self, video_id):
+        return "%s/%s" % (_URL_VIDEO_API_BASE, video_id)
+
+    def _extract_title_page_episodes(self, json_data):
+        seasons = [s for s in json_data["data"]["listablesBySlug"][0]["associatedContent"]
+                   if s["type"] == "Season"]
+
+        episodes = []
+
+        for i, season in enumerate(seasons):
+            for ii, episode in enumerate(season["items"]):
+                item = episode["item"]
+                episodes.append({
+                    "title": item["nameRaw"],
+                    "url": self._build_episode_url(item["videoSvtId"]),
+                    "description": item["longDescription"],
+                    "thumbnail": self._build_thumbnail_url(item["image"]["id"],
+                                                           item["image"]["changed"]),
+                    "duration": item["duration"],
+                    # Only for sorting, the actual season/episode number doesn't matter
+                    "season": i,
+                    "episode": ii
+                })
+
+        return episodes
+
+    def _extract_video_page_episodes(self, json_data):
+        item = json_data["data"]["listablesByEscenicId"][0]
+        episode = {
+            "title": item["name"],
+            "url": self._build_episode_url(item["videoSvtId"]),
+            "description": item["longDescription"],
+            "thumbnail": self._build_thumbnail_url(item["image"]["id"],
+                                                   item["image"]["changed"]),
+            "duration": item["duration"],
+            "season": 0,
+            "episode": 0
         }
 
-    def _extract_shows(self, json_data):
-        return json_data
+        return [episode]
 
-    def _build_episode_url(self, relative_url):
-        return "%s/%s" % (_URL_VIDEO_API_BASE, relative_url)
-
-    def _is_available_now(self, episode):
-        date_string = episode.get("validFrom")
-        if not date_string:
-            logger.warning("No validFrom key. Episode not included")
-            return False
-
-        now = datetime.datetime.now(dateutil.tz.UTC)
-        valid_from = dateutil.parser.parse(date_string)
-        return now > valid_from
-
-    def _extract_episodes(self, json_data):
-        return [episode for episode in json_data
-                if self._is_available_now(episode)]
-
-    def _build_thumbnail_url(self, response_url):
-        if not response_url:
-            return ""
-        if response_url.startswith("//"):
-            prefix = "https:"
-        else:
-            prefix = ""
-        return "%s%s" % (prefix, response_url.replace("{format}", "large"))
+    def _build_thumbnail_url(self, img_id, changed):
+        return "%s/wide/800/%s/%s?quality=70" % (_URL_THUMBNAIL_BASE,
+                                                 img_id,
+                                                 changed)
 
     def _strip_query_string(self, url):
         split_url = urlparse.urlsplit(url)
         return urlparse.urlunsplit((split_url.scheme, split_url.netloc, split_url.path, "", ""))
 
     @tornado.gen.coroutine
+    def _get_graphql_json(self, operation, variables, shasum):
+        url = self._build_graphql_query(operation,
+                                        variables,
+                                        shasum)
+
+        logger.debug("Fetching episodes from %s", url)
+        response = yield AsyncHTTPClient().fetch(url,
+                                                 # For some reason, this is accepted,
+                                                 # but whatever tornado uses per default isn't
+                                                 headers={"User-Agent": "curl/7.47.0"})
+        parsed_response = json.loads(response.body)
+        raise tornado.gen.Return(parsed_response)
+
+    def _build_graphql_query(self, operation, variables, shasum):
+        params = {
+            "operationName": operation,
+            "variables": json.dumps(variables),
+            "extensions": json.dumps({
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": shasum
+                }
+            })
+        }
+        return url_concat(_URL_GRAPHQL_API, params)
+
+    @tornado.gen.coroutine
     def get_all_shows(self):
         response = yield AsyncHTTPClient().fetch(_URL_ALL_SHOWS)
         parsed_response = json.loads(response.body)
         all_shows = [self._format_show(show) for show in
-                     self._extract_shows(parsed_response)]
+                     parsed_response]
         # Sort by title here rather than on client (should be cheaper)
         raise tornado.gen.Return(sorted(all_shows, key=lambda s: s["title"]))
 
     @tornado.gen.coroutine
     def get_episodes_for_show(self, show_url):
         # SVTPlay uses two different formats for getting an episode listing from the shows listing:
-        # First is /<name-of-show>. Here you first need to get the show page by the title?slug=<name-of-show>,
-        # That call will give you an episode id, which you can use with the show episodes endpoint.
+        # First is /<slug>
+        # Here you can use the TitlePage API to get the show page by querying by the slug
         #
-        # The second format is /video/<id_of_show>/whatever/whatever
-        # Here you can extract the id from the path, and use it immediately with the show episodes endpoint.
+        # The second format is /video/<id_of_show>/<slug>
+        # Here you can extract the id and use it with the VideoPage API
+        # (the TitlePage API will not contain enough info for this show)
         if show_url.startswith("/video/"):
             show_id = show_url.split("/")[2]
-            url = "%s?articleId=%s" % (_URL_SHOW_EPISODES_ALT, show_id)
+            parsed_response = yield self._get_graphql_json("VideoPage",
+                                                           {"legacyIds": [show_id]},
+                                                           _SHASUM_VIDEO_PAGE)
+            episodes = self._extract_video_page_episodes(parsed_response)
         else:
-            # This is a bit sloppy as there could conceivably be more formats...
-            slug = show_url.strip("/")
-            title_response = yield AsyncHTTPClient().fetch("%s/title?slug=%s" % (_URL_API_BASE, slug))
-            parsed_title_response = json.loads(title_response.body)
-            show_id = parsed_title_response["articleId"]
-            url = "%s?articleId=%s" % (_URL_SHOW_EPISODES, show_id)
+            slug = show_url.lstrip("/")
+            parsed_response = yield self._get_graphql_json("TitlePage",
+                                                           {"titleSlugs": [slug]},
+                                                           _SHASUM_TITLE_PAGE)
+            episodes = self._extract_title_page_episodes(parsed_response)
 
-        logger.debug("Fetching episodes from %s", url)
-        response = yield AsyncHTTPClient().fetch(url)
-        parsed_response = json.loads(response.body)
-        formatted_episodes = sorted([self._format_episode(episode) for episode in
-                                     self._extract_episodes(parsed_response)],
-                                    key=lambda e: (e["season"], e["episode"]))
-        raise tornado.gen.Return(formatted_episodes)
+        raise tornado.gen.Return(episodes)
 
     @tornado.gen.coroutine
     def get_video_url_for_episode(self, videos_list_url):
